@@ -1,6 +1,10 @@
 package org.cmu.ds2013s;
 
 public class ProcessManager {
+  
+  private ProcessManager() {
+    
+  }
 
   public static void main(String[] args) {
     Runnable mainProcedure = createManager(args);
@@ -37,9 +41,10 @@ public class ProcessManager {
     
     try {
       int port = Integer.parseInt(arg[0]);
-      String hostname = arg[2];
       
-      if (arg[1].compareTo("-c") == 0) {
+      if (arg.length == 3 && arg[1].compareTo("-c") == 0) {
+        String hostname = arg[2];
+        
         return new SlaveManager();
       }else {
         return new MasterManager(port);
