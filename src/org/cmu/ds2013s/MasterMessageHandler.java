@@ -9,8 +9,11 @@ public class MasterMessageHandler extends MessageHandler {
 
   private static final Log logger = LogFactory.getLog(MasterMessageHandler.class);
 
-  public MasterMessageHandler(Socket s) {
+  private MasterManager _context;
+  
+  public MasterMessageHandler(Socket s, ManagerContext context) {
     super(s);
+    this._context = (MasterManager) context;
   }
 
   @Override
@@ -20,6 +23,8 @@ public class MasterMessageHandler extends MessageHandler {
     switch (cmd.getType()) {
       case HEART_BEAT:
         // TODO: handle heart beat command
+        String slavekey = SlaveMeta.getMapKey(cmd.getFromHost(), cmd.getFromPort());
+        
         break;
       default:
         break;

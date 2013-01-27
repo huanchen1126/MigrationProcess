@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class MasterManager implements Runnable {
+public class MasterManager implements ManagerContext {
   private static final Log logger = LogFactory.getLog(MasterManager.class);
 
   private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
@@ -33,7 +33,6 @@ public class MasterManager implements Runnable {
     LoadBalancer loadbalancer = new LoadBalancer(this._slaves);
     ScheduledExecutorService loadBalSvr = Executors.newScheduledThreadPool(8);
     loadBalSvr.scheduleAtFixedRate(loadbalancer, 0, LOAD_BALANCE_CYCLE_SEC, TimeUnit.SECONDS);
-
   }
 
   /**

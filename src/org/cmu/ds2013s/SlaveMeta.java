@@ -41,4 +41,7 @@ public class SlaveMeta {
     this._isalive = _isalive;
   }
 
+  public static String getMapKey(String host, int port) {
+    return host + ":" + port;
+  }
 }
