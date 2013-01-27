@@ -11,15 +11,15 @@ public class MigrationTask {
     this._number = num;
   }
   
-  public SlaveMeta get_from() {
+  public SlaveMeta getFrom() {
     return _from;
   }
 
-  public SlaveMeta get_to() {
+  public SlaveMeta getTo() {
     return _to;
   }
 
-  public int get_number() {
+  public int getNumber() {
     return _number;
   }
 }

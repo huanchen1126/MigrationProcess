@@ -6,11 +6,11 @@ import java.util.*;
 public class LoadBalancer implements Runnable {
   private static final Log logger = LogFactory.getLog(LoadBalancer.class);
 
-  private Vector<SlaveMeta> _slaves;
+  private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
 
   private LoadBalancerStrategy _lbstrategy;
 
-  public LoadBalancer(Vector<SlaveMeta> slaves) {
+  public LoadBalancer(Map<String, SlaveMeta> slaves) {
     this._slaves = slaves;
     this._lbstrategy = new DefaultLoadBalancerStrategy();
   }
@@ -46,18 +46,18 @@ public class LoadBalancer implements Runnable {
   private void doAliveChecking() {
     synchronized (this._slaves) {
       List<SlaveMeta> tobedelete = new ArrayList<SlaveMeta>();
-      
-      for (SlaveMeta slave : this._slaves) {
+
+      for (SlaveMeta slave : this._slaves.values()) {
         if (!slave.isAlive()) {
           tobedelete.add(slave);
         }
       }
-      
-      for(SlaveMeta slave : tobedelete) {
+
+      for (SlaveMeta slave : tobedelete) {
         logger.info("Slave " + slave.getIp() + ":" + slave.getPort() + " has been removed.");
         this._slaves.remove(slave);
       }
-      
+
     }
   }
 

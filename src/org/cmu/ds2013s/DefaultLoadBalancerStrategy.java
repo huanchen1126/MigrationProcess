@@ -1,11 +1,13 @@
 package org.cmu.ds2013s;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 public class DefaultLoadBalancerStrategy implements LoadBalancerStrategy {
 
-  public List<MigrationTask> getLoadBalanceTasks(Vector<SlaveMeta> slaves) {
+  @Override
+  public List<MigrationTask> getLoadBalanceTasks(Map<String, SlaveMeta> slaves) {
 
     return null;
   }

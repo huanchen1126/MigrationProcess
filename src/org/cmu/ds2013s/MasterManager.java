@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 public class MasterManager implements Runnable {
   private static final Log logger = LogFactory.getLog(MasterManager.class);
 
-  private Vector<SlaveMeta> _slaves;
+  private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
 
   public static final int LOAD_BALANCE_CYCLE_SEC = 1;
 
@@ -23,26 +23,26 @@ public class MasterManager implements Runnable {
     this._port = port;
     this._ip = CommunicationUtil.getLocalIPAddress();
 
-    this._slaves = new Vector<SlaveMeta>();
+    this._slaves = Collections.synchronizedMap(new TreeMap<String, SlaveMeta>());
   }
 
   @Override
   public void run() {
     logger.info("MasterManager begin running on " + this._ip + ":" + this._port + ".");
-    
+
     LoadBalancer loadbalancer = new LoadBalancer(this._slaves);
     ScheduledExecutorService loadBalSvr = Executors.newScheduledThreadPool(8);
     loadBalSvr.scheduleAtFixedRate(loadbalancer, 0, LOAD_BALANCE_CYCLE_SEC, TimeUnit.SECONDS);
+
   }
-  
+
   /**
    * 
    * @return a copy of the status of all slaves
    */
   public List<SlaveMeta> getSlaves() {
     // create a copy of slave lists to prevent modification
-    return new ArrayList<SlaveMeta>(this._slaves);
+    return new ArrayList<SlaveMeta>(this._slaves.values());
   }
-  
- 
+
 }
