@@ -36,6 +36,22 @@ public class MasterManager implements ManagerContext {
   }
 
   /**
+   * update the info of a slave
+   * 
+   * @param key
+   *          the key of the slave in the map
+   * @param wl
+   *          the newest workload of this slave
+   */
+  public void updateSlaveMeta(String key, int wl) {
+    if (this._slaves.containsKey(key)) {
+      this._slaves.get(key).setAlive(true);
+      this._slaves.get(key).setWorkload(wl);
+    } else
+      logger.error("No such slave " + key + " in Master now.");
+  }
+
+  /**
    * 
    * @return a copy of the status of all slaves
    */

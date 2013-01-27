@@ -22,13 +22,21 @@ public class MasterMessageHandler extends MessageHandler {
 
     switch (cmd.getType()) {
       case HEART_BEAT:
-        // TODO: handle heart beat command
-        String slavekey = SlaveMeta.getMapKey(cmd.getFromHost(), cmd.getFromPort());
-        
+        handleHeartBeat(cmd);
         break;
       default:
+        logger.debug("Invalid command for master. Content : " + cmd.getBody());
         break;
     }
+  }
+  
+  public void handleHeartBeat(Command cmd) {
+    HeartBeatCommand hbcmd = (HeartBeatCommand) cmd;
+    String slavekey = SlaveMeta.getMapKey(hbcmd.getFromHost(), hbcmd.getFromPort());
+    
+    logger.debug("Received a HEARTBEAT from " + slavekey + ". Content: " + hbcmd.getBody());
+    
+    this._context.updateSlaveMeta(slavekey, hbcmd.getWorkLoad());    
   }
 
 }
