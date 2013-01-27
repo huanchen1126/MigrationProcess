@@ -1,5 +1,5 @@
 package org.cmu.ds2013s;
 
-public interface MessageHandler {
+public interface MessageHandler extends Runnable{
   
 }
