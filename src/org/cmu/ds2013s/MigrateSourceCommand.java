@@ -4,9 +4,9 @@ public class MigrateSourceCommand extends Command {
 
   private int _migrateNum;
 
-  protected MigrateSourceCommand(CommandType type, byte[] body, String host, int port,
+  public MigrateSourceCommand(CommandType type, String host, int port,
           int migrateNum) {
-    super(type, body, host, port);
+    super(type, host, port);
     _migrateNum = migrateNum;
   }
 

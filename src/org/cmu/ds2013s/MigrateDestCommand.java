@@ -4,8 +4,8 @@ public class MigrateDestCommand extends Command {
 
   private int _migrateNum;
   
-  protected MigrateDestCommand(CommandType type, byte[] body, String host, int port, int migrateNum) {
-    super(type, body, host, port);
+  public MigrateDestCommand(CommandType type, String host, int port, int migrateNum) {
+    super(type, host, port);
     _migrateNum = migrateNum;
   }
 

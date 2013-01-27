@@ -34,28 +34,23 @@ public abstract class Command {
   public static int PORT_LEN = Integer.SIZE / Byte.SIZE;
 
   public static int NUM_LEN = Integer.SIZE / Byte.SIZE;
+  
+  public static int HEADER_LEN = LENGTH_LEN + CMD_LEN + IP_LEN + PORT_LEN;
 
   private CommandType _type;
-
-  private byte[] _body;
 
   private String _fromHost;
 
   private int _fromPort;
 
-  protected Command(CommandType type, byte[] body, String host, int port) {
+  public Command(CommandType type, String host, int port) {
     this._fromHost = host;
     this._fromPort = port;
     this._type = type;
-    this._body = body;
   }
 
   public CommandType getType() {
     return this._type;
-  }
-
-  public byte[] getBody() {
-    return this._body;
   }
 
   public String getFromHost() {
@@ -98,7 +93,7 @@ public abstract class Command {
           int workload = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
           offset += Command.NUM_LEN;
 
-          result = new HeartBeatCommand(cmdtype, content, workload, ipstr, port);
+          result = new HeartBeatCommand(cmdtype, workload, ipstr, port);
           break;
         case MIGRATE_SOURCE:
           ipbin = new byte[Command.IP_LEN];
@@ -113,7 +108,7 @@ public abstract class Command {
           migNum = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
           offset += Command.NUM_LEN;
 
-          result = new MigrateSourceCommand(cmdtype, content, ipstr, port, migNum);
+          result = new MigrateSourceCommand(cmdtype, ipstr, port, migNum);
         case MIGRATE_DEST:
           ipbin = new byte[Command.IP_LEN];
           System.arraycopy(content, offset, ipbin, 0, Command.IP_LEN);
@@ -127,7 +122,7 @@ public abstract class Command {
           migNum = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
           offset += Command.NUM_LEN;
 
-          result = new MigrateDestCommand(cmdtype, content, ipstr, port, migNum);
+          result = new MigrateDestCommand(cmdtype, ipstr, port, migNum);
         case MIGRATE_SEND:
           ipbin = new byte[Command.IP_LEN];
           System.arraycopy(content, offset, ipbin, 0, Command.IP_LEN);
@@ -141,7 +136,7 @@ public abstract class Command {
           byte[] object = new byte[content.length - offset];
           System.arraycopy(content, offset, object, 0, object.length);
 
-          result = new MigrateSendCommand(cmdtype, content, ipstr, port, object);
+          result = new MigrateSendCommand(cmdtype,ipstr, port, object);
       }
 
     } catch (UnknownHostException e) {
