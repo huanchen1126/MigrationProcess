@@ -35,7 +35,7 @@ public class ProcessManager {
    */
   public static Runnable createManager(String[] arg) {
     if (arg == null || arg.length == 0) {
-      System.err.println("Usage: ProcessManager <port> [-c <hostname>]");
+      System.err.println("Usage: ProcessManager <port> [-c <hostname:port>]");
       return null;
     }
     
@@ -43,9 +43,10 @@ public class ProcessManager {
       int port = Integer.parseInt(arg[0]);
       
       if (arg.length == 3 && arg[1].compareTo("-c") == 0) {
-        String hostname = arg[2];
+        String masterip = SlaveMeta.getIpFromMapKey(arg[2]);
+        int masterport = SlaveMeta.getPortFromMapKey(arg[2]);
         
-        return new SlaveManager(hostname, port);
+        return new SlaveManager(port, masterip, masterport);
       }else {
         return new MasterManager(port);
       }

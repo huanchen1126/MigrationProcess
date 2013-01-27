@@ -2,7 +2,6 @@ package org.cmu.ds2013s;
 
 import java.io.Console;
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
 import java.util.Vector;
 
 public class SlaveManager implements ManagerContext {
@@ -14,12 +13,18 @@ public class SlaveManager implements ManagerContext {
 
   private int _port;
   
+  private String _masterHostname;
+  
+  private int _masterPort;
+  
 
-  public SlaveManager(String hostname, int port) {
+  public SlaveManager(int port, String masterHostname, int masterPort) {
     processes = new Vector<Thread>();
     console = System.console();
-    this._hostname = hostname;
+    this._hostname = CommunicationUtil.getLocalIPAddress();
     this._port = port;
+    this._masterHostname = masterHostname;
+    this._masterPort = masterPort;
   }
 
   @Override
