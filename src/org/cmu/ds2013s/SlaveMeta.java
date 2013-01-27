@@ -17,35 +17,27 @@ public class SlaveMeta {
     this._isalive = alive;
   }
 
-  public String get_ip() {
+  public String getIp() {
     return _ip;
   }
 
-  public void set_ip(String _ip) {
-    this._ip = _ip;
-  }
-
-  public int get_port() {
+  public int getPort() {
     return _port;
   }
 
-  public void set_port(int _port) {
-    this._port = _port;
-  }
-
-  public int get_workload() {
+  public int getWorkload() {
     return _workload;
   }
-
-  public void set_workload(int _workload) {
+  
+  public void setWorkload(int _workload) {
     this._workload = _workload;
   }
 
-  public boolean is_isalive() {
+  public boolean isAlive() {
     return _isalive;
   }
 
-  public void set_isalive(boolean _isalive) {
+  public void setAlive(boolean _isalive) {
     this._isalive = _isalive;
   }
 

@@ -13,7 +13,7 @@ public class MasterManager implements Runnable {
 
   private Vector<SlaveMeta> _slaves;
 
-  public static final int LOAD_BALANCE_CYCLE_SEC = 5;
+  public static final int LOAD_BALANCE_CYCLE_SEC = 1;
 
   private int _port;
 
@@ -31,10 +31,8 @@ public class MasterManager implements Runnable {
     logger.info("MasterManager begin running on " + this._ip + ":" + this._port + ".");
     
     LoadBalancer loadbalancer = new LoadBalancer(this._slaves);
-
     ScheduledExecutorService loadBalSvr = Executors.newScheduledThreadPool(8);
     loadBalSvr.scheduleAtFixedRate(loadbalancer, 0, LOAD_BALANCE_CYCLE_SEC, TimeUnit.SECONDS);
-
   }
   
   /**
