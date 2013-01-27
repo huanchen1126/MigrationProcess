@@ -1,11 +1,10 @@
 package org.cmu.ds2013s;
 
-public class MigrateSourceCommand extends Command {
+public class MigrateDestCommand extends Command {
 
   private int _migrateNum;
-
-  protected MigrateSourceCommand(CommandType type, byte[] body, String host, int port,
-          int migrateNum) {
+  
+  protected MigrateDestCommand(CommandType type, byte[] body, String host, int port, int migrateNum) {
     super(type, body, host, port);
     _migrateNum = migrateNum;
   }

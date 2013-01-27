@@ -9,11 +9,15 @@ public class TransactionFileOutputStream extends OutputStream implements Seriali
   private long _offset; // offset is not necessary for output stream
 
   private boolean _firstWrite;
-
+  
   public TransactionFileOutputStream(String fn) {
+    this(fn, false);
+  }
+
+  public TransactionFileOutputStream(String fn, boolean isappend) {
     this._fileName = fn;
     this._offset = 0;
-    this._firstWrite = true;
+    this._firstWrite = !isappend;
   }
 
   @Override

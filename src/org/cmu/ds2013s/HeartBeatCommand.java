@@ -4,15 +4,14 @@ public class HeartBeatCommand extends Command {
   
   private int _workload;
 
-  protected HeartBeatCommand(CommandType type, String body, int wl, String host, int port) {
+  protected HeartBeatCommand(CommandType type, byte[] body, int wl, String host, int port) {
     super(type, body, host, port);
     
     this._workload = wl;
   }
 
   @Override
-  public String toText() {
-    // TODO : write rule to transcript this command to text for communication
+  public byte[] toBytes() {
     return null;
   }
   

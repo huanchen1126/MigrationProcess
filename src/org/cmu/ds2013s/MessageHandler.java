@@ -46,7 +46,6 @@ public abstract class MessageHandler implements Runnable{
     int remoteport = this._socket.getPort();
     
     // get the content of the command
-    //String content = null;
     BufferedInputStream bis = null;
     byte[] content = null;
     try {
@@ -57,13 +56,15 @@ public abstract class MessageHandler implements Runnable{
       content = new byte[len];
       bis.read(content);
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }finally{
-      bis.close();
-      this._socket.close();
+      try {
+        bis.close();
+        this._socket.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
-    // TODO: read the command text from the socket
     
     return Command.newInstance(content, remotehost, remoteport);
   }
