@@ -5,12 +5,30 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class NetworkListener implements Runnable {
+  private static final Log logger = LogFactory.getLog(NetworkListener.class);
+  private Class _class;
+  private ManagerContext _context; 
+  private final static int PORT = 3333;
 
-  Class theClass;
-
-  public NetworkListener(MessageHandler handler) {
-    theClass = handler.getClass();
+  public NetworkListener(String classname, ManagerContext context) {
+    try {
+      _class = Class.forName(classname);
+      Class superClass = Class.forName("MessageHandler");
+      if(!_class.isAssignableFrom(superClass)){
+        throw new Exception("Class "+classname+" is not subclass of MessageHandler");
+      }
+      this._context = context;
+    } catch (ClassNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -18,12 +36,12 @@ public class NetworkListener implements Runnable {
     ServerSocket serverSocket = null;
     boolean listening = true;
     try {
-      serverSocket = new ServerSocket(3333);
+      serverSocket = new ServerSocket(PORT);
       while (listening) {
-        System.out.println("Listening");
+        logger.info("Listening");
         // Thread thread = new Thread(new handler(serverSocket.accept()));
         try {
-          Thread thread = new Thread((Runnable) theClass.getConstructor(Socket.class).newInstance(
+          Thread thread = new Thread((Runnable) _class.getConstructor(Socket.class, ManagerContext.class).newInstance(
                   serverSocket.accept()));
           thread.start();
         } catch (IllegalArgumentException e) {
@@ -39,7 +57,7 @@ public class NetworkListener implements Runnable {
         } catch (NoSuchMethodException e) {
           e.printStackTrace();
         }
-        System.out.println("Accepted");
+        logger.info("Accepted");
       }
       serverSocket.close();
     } catch (IOException e) {

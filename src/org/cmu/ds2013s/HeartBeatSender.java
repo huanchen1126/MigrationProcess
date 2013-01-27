@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 public class HeartBeatSender implements Runnable {
   SlaveManager slaveManager;
   int currentLoad = 0;
+  public final static int HEART_BEAT_PERIOD = 5;
+  
 
   public HeartBeatSender(SlaveManager slaveManager) {
     this.slaveManager = slaveManager;
@@ -33,7 +35,7 @@ public class HeartBeatSender implements Runnable {
         currentLoad = slaveManager.processes.size();
         /* send heart beat here */
       }
-    }, 0, 5, TimeUnit.SECONDS);
+    }, 0, HEART_BEAT_PERIOD, TimeUnit.SECONDS);
   }
 
 }
