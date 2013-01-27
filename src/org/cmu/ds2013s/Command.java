@@ -9,6 +9,9 @@ public abstract class Command {
    */
   public enum CommandType { HEART_BEAT, MIGRATE_SOURCE, MIGRATE_DEST, MIGRATE_SEND };
   
+  public static int LENGTH_LEN = Integer.SIZE/Byte.SIZE;
+  public static int CMD_LEN = Integer.SIZE/Byte.SIZE;
+  
   private CommandType _type;
   private String _body;
   private String _fromHost;

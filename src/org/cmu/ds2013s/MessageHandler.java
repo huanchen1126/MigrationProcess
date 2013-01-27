@@ -1,6 +1,9 @@
 package org.cmu.ds2013s;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +46,23 @@ public abstract class MessageHandler implements Runnable{
     int remoteport = this._socket.getPort();
     
     // get the content of the command
-    String content = null;
+    //String content = null;
+    BufferedInputStream bis = null;
+    byte[] content = null;
+    try {
+      bis = new BufferedInputStream(this._socket.getInputStream());
+      byte[] length = new byte[Command.LENGTH_LEN];
+      bis.read(length, 0, Command.LENGTH_LEN);
+      int len = ByteBuffer.wrap(length).getInt();
+      content = new byte[len];
+      bis.read(content);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }finally{
+      bis.close();
+      this._socket.close();
+    }
     // TODO: read the command text from the socket
     
     return Command.newInstance(content, remotehost, remoteport);
