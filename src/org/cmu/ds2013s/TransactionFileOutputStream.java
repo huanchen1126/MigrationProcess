@@ -9,7 +9,7 @@ public class TransactionFileOutputStream extends OutputStream implements Seriali
   private long _offset; // offset is not necessary for output stream
 
   private boolean _firstWrite;
-  
+
   public TransactionFileOutputStream(String fn) {
     this(fn, false);
   }
@@ -23,8 +23,7 @@ public class TransactionFileOutputStream extends OutputStream implements Seriali
   @Override
   public synchronized void write(byte[] b, int off, int len) throws IOException {
     // open the stream with append mode
-    BufferedOutputStream outstream = new BufferedOutputStream(new FileOutputStream(this._fileName,
-            !this._firstWrite));
+    FileOutputStream outstream = new FileOutputStream(this._fileName, !this._firstWrite);
     this._firstWrite = false;
 
     outstream.write(b, off, len);
@@ -37,8 +36,7 @@ public class TransactionFileOutputStream extends OutputStream implements Seriali
   @Override
   public synchronized void write(byte[] b) throws IOException {
     // open the stream with append mode
-    BufferedOutputStream outstream = new BufferedOutputStream(new FileOutputStream(this._fileName,
-            !this._firstWrite));
+    FileOutputStream outstream = new FileOutputStream(this._fileName, !this._firstWrite);
     this._firstWrite = false;
 
     outstream.write(b);
@@ -51,8 +49,7 @@ public class TransactionFileOutputStream extends OutputStream implements Seriali
   @Override
   public synchronized void write(int b) throws IOException {
     // open the stream with append mode
-    BufferedOutputStream outstream = new BufferedOutputStream(new FileOutputStream(this._fileName,
-            !this._firstWrite));
+    FileOutputStream outstream = new FileOutputStream(this._fileName, !this._firstWrite);
     this._firstWrite = false;
 
     outstream.write(b);

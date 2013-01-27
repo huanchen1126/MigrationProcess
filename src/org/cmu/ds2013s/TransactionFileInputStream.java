@@ -23,12 +23,10 @@ public class TransactionFileInputStream extends InputStream implements Serializa
   @Override
   public synchronized int read() throws IOException {
     // open the stream
-    BufferedInputStream instream = new BufferedInputStream(new FileInputStream(this._fileName));
+    RandomAccessFile instream = new RandomAccessFile(this._fileName, "r");
     
     // skip to the right place
-    long actoff = instream.skip(this._offset);
-    if (actoff != this._offset)
-      throw new RuntimeException("Seek offset error");
+    instream.seek(this._offset);
     
     int result = instream.read();
     this._offset ++;
@@ -42,12 +40,10 @@ public class TransactionFileInputStream extends InputStream implements Serializa
   @Override
   public synchronized int read(byte[] buffer, int off, int len) throws IOException {
     // open the stream
-    BufferedInputStream instream = new BufferedInputStream(new FileInputStream(this._fileName));
+    RandomAccessFile instream = new RandomAccessFile(this._fileName, "r");
     
     // skip to the right place
-    long actoff = instream.skip(this._offset);
-    if (actoff != this._offset)
-      throw new RuntimeException("Seek offset error");
+    instream.seek(this._offset);
     
     int result = instream.read(buffer, off, len);
     if (result != -1) {
@@ -63,12 +59,10 @@ public class TransactionFileInputStream extends InputStream implements Serializa
   @Override
   public synchronized int read(byte[] buffer) throws IOException {
     // open the stream
-    BufferedInputStream instream = new BufferedInputStream(new FileInputStream(this._fileName));
+    RandomAccessFile instream = new RandomAccessFile(this._fileName, "r");
     
     // skip to the right place
-    long actoff = instream.skip(this._offset);
-    if (actoff != this._offset)
-      throw new RuntimeException("Seek offset error");
+    instream.seek(this._offset);
     
     int result = instream.read(buffer);
     if (result != -1) {

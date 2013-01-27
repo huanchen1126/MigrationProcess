@@ -5,8 +5,7 @@ import java.util.Scanner;
 
 public class Main {
   public static void main(String[] args) {
-    byte[] a = {0x00, 0x00, 0x00, 0x00};
-    Command.newInstance(a, "", 0);
+    CommunicationUtil.sendCommand("128.237.125.238", 12346, "hello".getBytes());
   }
   
   public static void SampleTransactionFileStream(String[] args) {
