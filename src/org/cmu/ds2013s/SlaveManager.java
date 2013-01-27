@@ -34,7 +34,7 @@ public class SlaveManager implements ManagerContext {
     Thread listener = new Thread(new NetworkListener(SlaveMessageHandler.class, _port, this));
     listener.start();
     while (true) {
-      String command = console.readLine("==> ").trim();
+      String command = console.readLine().trim();
       if (command.equals("")) {
         continue;
       } else if (command.equals("ps")) {
@@ -80,5 +80,6 @@ public class SlaveManager implements ManagerContext {
       }
     }
   }
+  
 
 }

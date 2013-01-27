@@ -6,7 +6,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class HeartBeatSender implements Runnable {
+  private static final Log logger = LogFactory.getLog(HeartBeatSender.class);
   SlaveManager slaveManager;
   int currentLoad = 0;
   public final static int HEART_BEAT_PERIOD = 5;
@@ -34,6 +38,8 @@ public class HeartBeatSender implements Runnable {
         }
         currentLoad = slaveManager.processes.size();
         /* send heart beat here */
+        logger.info("heart beat sending ..."+currentLoad);
+        
       }
     }, 0, HEART_BEAT_PERIOD, TimeUnit.SECONDS);
   }
