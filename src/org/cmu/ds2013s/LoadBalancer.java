@@ -73,7 +73,7 @@ public class LoadBalancer implements Runnable {
       return;
 
     for (MigrationTask task : tasks) {
-      // do sth for each task
+      // TODO: do sth for each task
     }
   }
 
