@@ -45,7 +45,7 @@ public class ProcessManager {
       if (arg.length == 3 && arg[1].compareTo("-c") == 0) {
         String hostname = arg[2];
         
-        return new SlaveManager();
+        return new SlaveManager(hostname, port);
       }else {
         return new MasterManager(port);
       }
