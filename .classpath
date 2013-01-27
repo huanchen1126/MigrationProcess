@@ -2,11 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/media/Workspace/workspace/MigrationProcess/lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/media/Workspace/workspace/MigrationProcess/lib/commons-logging-1.1.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="/media/Workspace/workspace/MigrationProcess/lib/commons-logging-1.1.1-sources.jar"/>
-	<classpathentry kind="lib" path="/media/Workspace/workspace/MigrationProcess/lib/commons-logging-adapters-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/media/Workspace/workspace/MigrationProcess/lib/commons-logging-api-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/media/Workspace/workspace/MigrationProcess/lib/commons-logging-tests.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-adapters-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-tests.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

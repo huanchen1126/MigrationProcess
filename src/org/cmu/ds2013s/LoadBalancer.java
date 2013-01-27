@@ -61,6 +61,10 @@ public class LoadBalancer implements Runnable {
     }
   }
 
+  /**
+   * execute load balance job
+   * 
+   */
   private void doLoadBalance() {
     List<MigrationTask> tasks = this.getLoadBalanceTasks();
 
