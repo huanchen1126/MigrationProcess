@@ -9,6 +9,13 @@ public class SlaveMeta {
   private int _workload;
 
   private boolean _isalive;
+  
+  public SlaveMeta(String ip, int p, int w, boolean alive) {
+    this._ip = ip;
+    this._port = p;
+    this._workload = w;
+    this._isalive = alive;
+  }
 
   public String get_ip() {
     return _ip;
