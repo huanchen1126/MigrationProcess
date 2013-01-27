@@ -13,6 +13,7 @@ public class SlaveManager implements ManagerContext {
   private String _hostname;
 
   private int _port;
+  
 
   public SlaveManager(String hostname, int port) {
     processes = new Vector<Thread>();
@@ -25,6 +26,8 @@ public class SlaveManager implements ManagerContext {
   public void run() {
     Thread heartBeatSender = new Thread(new HeartBeatSender(this));
     heartBeatSender.start();
+    Thread listener = new Thread(new NetworkListener(SlaveMessageHandler.class, _port, this));
+    listener.start();
     while (true) {
       String command = console.readLine("==> ").trim();
       if (command.equals("")) {
