@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public class SlaveManager implements Runnable {
   LinkedList<Thread> processes = new LinkedList<Thread>();
-  
+
   Console console = System.console();
 
   @Override
@@ -22,9 +22,17 @@ public class SlaveManager implements Runnable {
       } else if (command.equals("quit")) {
         System.exit(0);
       } else {
-        int spaceIndex = command.indexOf(" ");
-        String className = command.substring(0, spaceIndex);
-        String[] arguments = command.substring(spaceIndex + 1).split(" ");
+        int spaceIndex = command.indexOf(' ');
+        String className = "";
+        String[] arguments = null;
+        
+        if (spaceIndex == -1) {
+          className = command;
+        } else {
+          className = command.substring(0, spaceIndex);
+          arguments = command.substring(spaceIndex + 1).split(" ");
+        }
+        
         try {
           Class theClass = Class.forName(className);
           MigratableProcess process = (MigratableProcess) theClass.getConstructor(String[].class)
