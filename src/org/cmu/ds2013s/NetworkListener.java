@@ -39,7 +39,7 @@ public class NetworkListener implements Runnable {
     ServerSocket serverSocket = null;
     boolean listening = true;
     try {
-      serverSocket = new ServerSocket(_port);
+      serverSocket = new ServerSocket(PORT);
       while (listening) {
         logger.info("Listening");
         // Thread thread = new Thread(new handler(serverSocket.accept()));

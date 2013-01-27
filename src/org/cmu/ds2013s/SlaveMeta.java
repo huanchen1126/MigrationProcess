@@ -44,4 +44,31 @@ public class SlaveMeta {
   public static String getMapKey(String host, int port) {
     return host + ":" + port;
   }
+  
+  public static String getIpFromMapKey(String key) {
+    if (key == null || key.length() == 0) {
+      throw new RuntimeException("Invalid Map key.");
+    }
+    
+    String[] ele = key.split(":");
+    if (ele.length != 2) {
+      throw new RuntimeException("Invalid Map key.");
+    }
+    
+    return ele[0];
+      
+  }
+  
+  public static int getPortFromMapKey(String key) {
+    if (key == null || key.length() == 0) {
+      throw new RuntimeException("Invalid Host:Port.");
+    }
+    
+    String[] ele = key.split(":");
+    if (ele.length != 2) {
+      throw new RuntimeException("Invalid Host:Port.");
+    }
+    
+    return Integer.parseInt(ele[1]);
+  }
 }
