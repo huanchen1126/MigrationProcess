@@ -24,7 +24,7 @@ public class HeartBeatSender implements Runnable {
         for(Thread thread : slaveManager.processes){
           if(!thread.isAlive()){
             slaveManager.console.printf("Process \""+thread.getName()+"\" was terminated");
-            toDelete.remove(thread);
+            toDelete.add(thread);
           }
         }
         for(Thread thread : toDelete){
