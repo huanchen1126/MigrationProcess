@@ -32,7 +32,7 @@ public class CommunicationUtil {
   public static void sendCommand(String ip, int port, byte[] content){
     Socket socket = null;
     try {
-      socket = new Socket(ip,port);
+      socket = new Socket(InetAddress.getByName(ip),port);
       OutputStream out = socket.getOutputStream(); 
       out.write(content);
       out.close();

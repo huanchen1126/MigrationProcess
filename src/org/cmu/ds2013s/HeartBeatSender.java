@@ -2,6 +2,7 @@ package org.cmu.ds2013s;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
@@ -46,20 +47,7 @@ public class HeartBeatSender implements Runnable {
         logger.info("heart beat sending ..."+currentLoad);
         HeartBeatCommand command = new HeartBeatCommand(CommandType.HEART_BEAT,currentLoad,slaveManager.get_hostname(),slaveManager.get_port());
         Socket socket = null;
-        try {
-          socket = new Socket(slaveManager.get_masterHostname(),slaveManager.get_port());
-          OutputStream out = socket.getOutputStream();
-          out.write(command.toBytes());
-        } catch (UnknownHostException e) {
-          e.printStackTrace();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-        try {
-          socket.close();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+        CommunicationUtil.sendCommand(slaveManager.get_masterHostname(),slaveManager.get_masterPort(), command.toBytes());
       }
     }, 0, HEART_BEAT_PERIOD, TimeUnit.SECONDS);
   }
