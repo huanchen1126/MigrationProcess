@@ -12,11 +12,10 @@ public class SlaveManager implements ManagerContext {
   private String _hostname;
 
   private int _port;
-  
+
   private String _masterHostname;
-  
+
   private int _masterPort;
-  
 
   public SlaveManager(int port, String masterHostname, int masterPort) {
     processes = new Vector<Thread>();
@@ -80,6 +79,37 @@ public class SlaveManager implements ManagerContext {
       }
     }
   }
-  
+
+  public String get_hostname() {
+    return _hostname;
+  }
+
+  public void set_hostname(String _hostname) {
+    this._hostname = _hostname;
+  }
+
+  public int get_port() {
+    return _port;
+  }
+
+  public void set_port(int _port) {
+    this._port = _port;
+  }
+
+  public String get_masterHostname() {
+    return _masterHostname;
+  }
+
+  public void set_masterHostname(String _masterHostname) {
+    this._masterHostname = _masterHostname;
+  }
+
+  public int get_masterPort() {
+    return _masterPort;
+  }
+
+  public void set_masterPort(int _masterPort) {
+    this._masterPort = _masterPort;
+  }
 
 }

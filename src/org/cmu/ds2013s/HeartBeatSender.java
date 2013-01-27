@@ -1,5 +1,9 @@
 package org.cmu.ds2013s;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -8,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cmu.ds2013s.Command.CommandType;
 
 public class HeartBeatSender implements Runnable {
   private static final Log logger = LogFactory.getLog(HeartBeatSender.class);
@@ -39,7 +44,22 @@ public class HeartBeatSender implements Runnable {
         currentLoad = slaveManager.processes.size();
         /* send heart beat here */
         logger.info("heart beat sending ..."+currentLoad);
-        
+        HeartBeatCommand command = new HeartBeatCommand(CommandType.HEART_BEAT,currentLoad,slaveManager.get_hostname(),slaveManager.get_port());
+        Socket socket = null;
+        try {
+          socket = new Socket(slaveManager.get_masterHostname(),slaveManager.get_port());
+          OutputStream out = socket.getOutputStream();
+          out.write(command.toBytes());
+        } catch (UnknownHostException e) {
+          e.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        try {
+          socket.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }, 0, HEART_BEAT_PERIOD, TimeUnit.SECONDS);
   }
