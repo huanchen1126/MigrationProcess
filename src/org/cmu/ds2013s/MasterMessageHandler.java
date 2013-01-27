@@ -25,7 +25,7 @@ public class MasterMessageHandler extends MessageHandler {
         handleHeartBeat(cmd);
         break;
       default:
-        logger.debug("Invalid command for master. Content : " + cmd.getBody());
+        logger.debug("Invalid command for master.");
         break;
     }
   }
@@ -34,7 +34,7 @@ public class MasterMessageHandler extends MessageHandler {
     HeartBeatCommand hbcmd = (HeartBeatCommand) cmd;
     String slavekey = SlaveMeta.getMapKey(hbcmd.getFromHost(), hbcmd.getFromPort());
     
-    logger.debug("Received a HEARTBEAT from " + slavekey + ". Content: " + hbcmd.getBody());
+    logger.debug("Received a HEARTBEAT from " + slavekey + ".");
     
     this._context.updateSlaveMeta(slavekey, hbcmd.getWorkLoad());    
   }
