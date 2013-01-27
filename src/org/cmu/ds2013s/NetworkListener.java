@@ -12,14 +12,14 @@ public class NetworkListener implements Runnable {
   private static final Log logger = LogFactory.getLog(NetworkListener.class);
   private Class _class;
   private ManagerContext _context; 
-  private int _port = 3333;
+  private final static int PORT = 3333;
 
-  public NetworkListener(Class c, int port, ManagerContext context) {
+  public NetworkListener(String classname, ManagerContext context) {
     try {
-      _class = c;
-      _port = port;
-      if(!_class.isAssignableFrom(MessageHandler.class)){
-        throw new Exception("Class "+c.getName()+" is not subclass of MessageHandler");
+      _class = Class.forName(classname);
+      Class superClass = Class.forName("MessageHandler");
+      if(!_class.isAssignableFrom(superClass)){
+        throw new Exception("Class "+classname+" is not subclass of MessageHandler");
       }
       this._context = context;
     } catch (ClassNotFoundException e) {
@@ -36,7 +36,7 @@ public class NetworkListener implements Runnable {
     ServerSocket serverSocket = null;
     boolean listening = true;
     try {
-      serverSocket = new ServerSocket(_port);
+      serverSocket = new ServerSocket(PORT);
       while (listening) {
         logger.info("Listening");
         // Thread thread = new Thread(new handler(serverSocket.accept()));

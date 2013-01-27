@@ -13,7 +13,7 @@ public class MasterManager implements ManagerContext {
 
   private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
 
-  public static final int LOAD_BALANCE_CYCLE_SEC = 1;
+  public static final int LOAD_BALANCE_CYCLE_SEC = 5;
 
   private int _port;
 
@@ -30,6 +30,11 @@ public class MasterManager implements ManagerContext {
   public void run() {
     logger.info("MasterManager begin running on " + this._ip + ":" + this._port + ".");
 
+    // start network listener
+    NetworkListener listener = new NetworkListener(MasterMessageHandler.class, this._port, this);
+    (new Thread(listener)).start();
+    
+    // start load balancer
     LoadBalancer loadbalancer = new LoadBalancer(this._slaves);
     ScheduledExecutorService loadBalSvr = Executors.newScheduledThreadPool(8);
     loadBalSvr.scheduleAtFixedRate(loadbalancer, 0, LOAD_BALANCE_CYCLE_SEC, TimeUnit.SECONDS);
@@ -47,8 +52,13 @@ public class MasterManager implements ManagerContext {
     if (this._slaves.containsKey(key)) {
       this._slaves.get(key).setAlive(true);
       this._slaves.get(key).setWorkload(wl);
-    } else
-      logger.error("No such slave " + key + " in Master now.");
+    } else {
+      logger.info("No such slave " + key + " in Master now. Register it.");
+      
+      SlaveMeta newslave = new SlaveMeta(SlaveMeta.getIpFromMapKey(key),
+              SlaveMeta.getPortFromMapKey(key), wl, true);
+      this._slaves.put(key, newslave);
+    }
   }
 
   /**
