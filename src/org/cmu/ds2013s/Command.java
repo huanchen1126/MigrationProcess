@@ -39,13 +39,13 @@ public abstract class Command {
 
   private CommandType _type;
 
-  private String _fromHost;
+  private String _host;
 
-  private int _fromPort;
+  private int _port;
 
   public Command(CommandType type, String host, int port) {
-    this._fromHost = host;
-    this._fromPort = port;
+    this._host = host;
+    this._port = port;
     this._type = type;
   }
 
@@ -53,12 +53,12 @@ public abstract class Command {
     return this._type;
   }
 
-  public String getFromHost() {
-    return this._fromHost;
+  public String getHost() {
+    return this._host;
   }
 
-  public int getFromPort() {
-    return this._fromPort;
+  public int getPort() {
+    return this._port;
   }
 
   public abstract byte[] toBytes();

@@ -32,7 +32,7 @@ public class MasterMessageHandler extends MessageHandler {
   
   public void handleHeartBeat(Command cmd) {
     HeartBeatCommand hbcmd = (HeartBeatCommand) cmd;
-    String slavekey = SlaveMeta.getMapKey(hbcmd.getFromHost(), hbcmd.getFromPort());
+    String slavekey = SlaveMeta.getMapKey(hbcmd.getHost(), hbcmd.getPort());
     
     logger.debug("Received a HEARTBEAT from " + slavekey + ".");
     

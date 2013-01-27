@@ -1,5 +1,7 @@
 package org.cmu.ds2013s;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 public class HeartBeatCommand extends Command {
@@ -27,16 +29,30 @@ public class HeartBeatCommand extends Command {
     // 2. encode command type
     int cmdtype = this.getType().getValue();
     byte[] typebin = ByteBuffer.allocate(CMD_LEN).putInt(cmdtype).array();
-    System.arraycopy(msglenbin, 0, result, offset, CMD_LEN);
+    System.arraycopy(typebin, 0, result, offset, CMD_LEN);
     offset += CMD_LEN;
     
     // 3. encode ip
+    byte[] ipbin = new byte[IP_LEN];
+    try {
+      ipbin = InetAddress.getByName(this.getHost()).getAddress();
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+    }
+    System.arraycopy(ipbin, 0, result, offset, IP_LEN);
+    offset += IP_LEN;
     
     // 4. encode port
+    byte[] portbin = ByteBuffer.allocate(PORT_LEN).putInt(this.getPort()).array();
+    System.arraycopy(portbin, 0, result, offset, PORT_LEN);
+    offset += PORT_LEN;
     
     // 5. encode workload
+    byte[] wlbin = ByteBuffer.allocate(NUM_LEN).putInt(this._workload).array();
+    System.arraycopy(wlbin, 0, result, offset, NUM_LEN);
+    offset += NUM_LEN;
     
-    return null;
+    return result;
   }
   
   public int getWorkLoad() {
