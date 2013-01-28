@@ -14,6 +14,8 @@ public class MasterMessageHandler extends MessageHandler {
   public MasterMessageHandler(Socket s, ManagerContext context) {
     super(s);
     this._context = (MasterManager) context;
+    
+    logger.info("Create a new Master Message Handler.");
   }
 
   @Override
@@ -34,7 +36,7 @@ public class MasterMessageHandler extends MessageHandler {
     HeartBeatCommand hbcmd = (HeartBeatCommand) cmd;
     String slavekey = SlaveMeta.getMapKey(hbcmd.getHost(), hbcmd.getPort());
     
-    logger.debug("Received a HEARTBEAT from " + slavekey + ".");
+    logger.info("Received a HEARTBEAT from " + slavekey + ". Load is " + hbcmd.getWorkLoad());
     
     this._context.updateSlaveMeta(slavekey, hbcmd.getWorkLoad());    
   }

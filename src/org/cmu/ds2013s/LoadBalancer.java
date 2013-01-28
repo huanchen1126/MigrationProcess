@@ -17,8 +17,7 @@ public class LoadBalancer implements Runnable {
 
   public void run() {
     logger.info("LoadBalancer run.");
-
-    this.doAliveChecking();
+    
     this.doLoadBalance();
   }
 
@@ -39,28 +38,7 @@ public class LoadBalancer implements Runnable {
   private List<MigrationTask> getLoadBalanceTasks() {
     return this._lbstrategy.getLoadBalanceTasks(this._slaves);
   }
-
-  /**
-   * remove all dead slaves
-   */
-  private void doAliveChecking() {
-    synchronized (this._slaves) {
-      List<SlaveMeta> tobedelete = new ArrayList<SlaveMeta>();
-
-      for (SlaveMeta slave : this._slaves.values()) {
-        if (!slave.isAlive()) {
-          tobedelete.add(slave);
-        }
-      }
-
-      for (SlaveMeta slave : tobedelete) {
-        logger.info("Slave " + slave.getIp() + ":" + slave.getPort() + " has been removed.");
-        this._slaves.remove(slave);
-      }
-
-    }
-  }
-
+  
   /**
    * execute load balance job
    * 

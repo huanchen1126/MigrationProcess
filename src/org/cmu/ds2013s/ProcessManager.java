@@ -8,6 +8,7 @@ public class ProcessManager {
 
   public static void main(String[] args) {
     Runnable mainProcedure = createManager(args);
+
     
     if (mainProcedure == null)
       return ;

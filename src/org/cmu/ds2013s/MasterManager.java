@@ -14,6 +14,10 @@ public class MasterManager implements ManagerContext {
   private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
 
   public static final int LOAD_BALANCE_CYCLE_SEC = 5;
+  
+  public static final int ALIVE_CHECK_CYCLE_SEC = 2;
+  
+  public static final int SCHEDULER_POOL_SIZE = 8;
 
   private int _port;
 
@@ -34,10 +38,15 @@ public class MasterManager implements ManagerContext {
     NetworkListener listener = new NetworkListener(MasterMessageHandler.class, this._port, this);
     (new Thread(listener)).start();
     
+    ScheduledExecutorService serviceSche = Executors.newScheduledThreadPool(SCHEDULER_POOL_SIZE);
+    
     // start load balancer
     LoadBalancer loadbalancer = new LoadBalancer(this._slaves);
-    ScheduledExecutorService loadBalSvr = Executors.newScheduledThreadPool(8);
-    loadBalSvr.scheduleAtFixedRate(loadbalancer, 0, LOAD_BALANCE_CYCLE_SEC, TimeUnit.SECONDS);
+    serviceSche.scheduleAtFixedRate(loadbalancer, LOAD_BALANCE_CYCLE_SEC, LOAD_BALANCE_CYCLE_SEC, TimeUnit.SECONDS);
+    
+    // start alive checking
+    SlaveAliveChecker aliveChecker = new SlaveAliveChecker(this._slaves);
+    serviceSche.scheduleAtFixedRate(aliveChecker, ALIVE_CHECK_CYCLE_SEC, ALIVE_CHECK_CYCLE_SEC, TimeUnit.SECONDS);
   }
 
   /**
