@@ -10,10 +10,10 @@ import org.apache.commons.logging.LogFactory;
 public class SlaveAliveChecker implements Runnable {
   private static final Log logger = LogFactory.getLog(SlaveAliveChecker.class);
   
-  private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
+  private MasterManager _manager;
   
-  public SlaveAliveChecker(Map<String, SlaveMeta> slaves) {
-    this._slaves = slaves;
+  public SlaveAliveChecker(MasterManager manager) {
+    this._manager = manager;
   }
   
   @Override
@@ -27,27 +27,29 @@ public class SlaveAliveChecker implements Runnable {
    * remove all dead slaves
    */
   private void doAliveChecking() {
-    synchronized (this._slaves) {
-      List<SlaveMeta> tobedelete = new ArrayList<SlaveMeta>();
+    List<SlaveMeta> slaves = this._manager.getSlaves();
 
-      for (SlaveMeta slave : this._slaves.values()) {
-        if (!slave.isAlive()) {
-          tobedelete.add(slave);
-        }
-      }
+    if (slaves.size() == 0)
+      return;
 
-      for (SlaveMeta slave : tobedelete) {
-        logger.info("Slave " + slave.getIp() + ":" + slave.getPort() + " has been removed.");
-        this._slaves.remove(slave);
-      }
-      
-      // flip the alive status for each slave
-      for (SlaveMeta slave : this._slaves.values()) {
-        slave.setAlive(false);
-      }
+    List<SlaveMeta> tobedelete = new ArrayList<SlaveMeta>();
 
+    for (SlaveMeta slave : slaves) {
+      if (!slave.isAlive()) {
+        tobedelete.add(slave);
+      }
     }
-  }
 
+    for (SlaveMeta slave : tobedelete) {
+      logger.info("Slave " + slave.getIp() + ":" + slave.getPort() + " has been removed.");
+      this._manager.deleteSlaveMeta(SlaveMeta.getMapKey(slave));
+    }
+
+    // flip the alive status for each slave
+    for (SlaveMeta slave : slaves) {
+      slave.setAlive(false);
+    }
+
+  }
 
 }

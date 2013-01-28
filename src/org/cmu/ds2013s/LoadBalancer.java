@@ -5,13 +5,13 @@ import java.util.*;
 
 public class LoadBalancer implements Runnable {
   private static final Log logger = LogFactory.getLog(LoadBalancer.class);
-
-  private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
+  
+  private MasterManager _manager;
 
   private LoadBalancerStrategy _lbstrategy;
 
-  public LoadBalancer(Map<String, SlaveMeta> slaves) {
-    this._slaves = slaves;
+  public LoadBalancer(MasterManager manager) {
+    this._manager = manager;
     this._lbstrategy = new DefaultLoadBalancerStrategy();
   }
 
@@ -36,7 +36,7 @@ public class LoadBalancer implements Runnable {
    * @return a list of migration tasks; if not need to migrate, return null;
    */
   private List<MigrationTask> getLoadBalanceTasks() {
-    return this._lbstrategy.getLoadBalanceTasks(this._slaves);
+    return this._lbstrategy.getLoadBalanceTasks(this._manager.getSlaves());
   }
   
   /**
@@ -47,8 +47,10 @@ public class LoadBalancer implements Runnable {
     List<MigrationTask> tasks = this.getLoadBalanceTasks();
 
     // nothing to do
-    if (tasks == null || tasks.size() == 0)
+    if (tasks == null || tasks.size() == 0) {
+      logger.info("LoadBalancer to do nothing.");
       return;
+    }
 
     for (MigrationTask task : tasks) {
       // TODO: do sth for each task

@@ -41,11 +41,11 @@ public class MasterManager implements ManagerContext {
     ScheduledExecutorService serviceSche = Executors.newScheduledThreadPool(SCHEDULER_POOL_SIZE);
     
     // start load balancer
-    LoadBalancer loadbalancer = new LoadBalancer(this._slaves);
+    LoadBalancer loadbalancer = new LoadBalancer(this);
     serviceSche.scheduleAtFixedRate(loadbalancer, LOAD_BALANCE_CYCLE_SEC, LOAD_BALANCE_CYCLE_SEC, TimeUnit.SECONDS);
     
     // start alive checking
-    SlaveAliveChecker aliveChecker = new SlaveAliveChecker(this._slaves);
+    SlaveAliveChecker aliveChecker = new SlaveAliveChecker(this);
     serviceSche.scheduleAtFixedRate(aliveChecker, ALIVE_CHECK_CYCLE_SEC, ALIVE_CHECK_CYCLE_SEC, TimeUnit.SECONDS);
   }
 
@@ -68,6 +68,10 @@ public class MasterManager implements ManagerContext {
               SlaveMeta.getPortFromMapKey(key), wl, true);
       this._slaves.put(key, newslave);
     }
+  }
+  
+  public void deleteSlaveMeta(String key) {
+    this._slaves.remove(key);
   }
 
   /**

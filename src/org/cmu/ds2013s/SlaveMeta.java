@@ -45,6 +45,10 @@ public class SlaveMeta {
     return host + ":" + port;
   }
   
+  public static String getMapKey(SlaveMeta meta) {
+    return meta.getIp() + ":" + meta.getPort();
+  }
+  
   public static String getIpFromMapKey(String key) {
     if (key == null || key.length() == 0) {
       throw new RuntimeException("Invalid Map key.");
