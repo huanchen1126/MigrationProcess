@@ -37,8 +37,11 @@ public class SlaveManager implements ManagerContext {
     heartBeatSender.start();
     Thread listener = new Thread(new NetworkListener(SlaveMessageHandler.class, _port, this));
     listener.start();
-    while (true) {
-      String command = console.readLine("==> ").trim();
+    int cnt = 5;
+    //while (true) {
+    while(cnt-->0){
+      //String command = console.readLine("==> ").trim();
+      String command = "";
       if (command.equals("")) {
         continue;
       } else if (command.equals("ps")) {
