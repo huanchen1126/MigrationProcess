@@ -10,7 +10,6 @@ public class MigrateSendCommand extends Command {
   
   public MigrateSendCommand(CommandType type, String host, int port, byte[] objectraw) {
     super(type, host, port);
-    
     this._object = objectraw;
   }
 
@@ -53,4 +52,11 @@ public class MigrateSendCommand extends Command {
     return result;
   }
 
+  public byte[] get_object() {
+    return _object;
+  }
+
+  public void set_object(byte[] _object) {
+    this._object = _object;
+  }
 }
