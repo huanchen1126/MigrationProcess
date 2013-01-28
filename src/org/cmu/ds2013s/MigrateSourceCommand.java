@@ -55,4 +55,12 @@ public class MigrateSourceCommand extends Command {
     return result;
   }
 
+  public int get_migrateNum() {
+    return _migrateNum;
+  }
+
+  public void set_migrateNum(int _migrateNum) {
+    this._migrateNum = _migrateNum;
+  }
+  
 }

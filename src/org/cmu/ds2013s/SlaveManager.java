@@ -2,11 +2,13 @@ package org.cmu.ds2013s;
 
 import java.io.Console;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SlaveManager implements ManagerContext {
-  public Vector<Thread> processes;
-
+  //public Vector<Thread> processes;
+  HashMap<Thread, MigratableProcess> processes;
   public Console console;
 
   private String _hostname;
@@ -16,9 +18,12 @@ public class SlaveManager implements ManagerContext {
   private String _masterHostname;
 
   private int _masterPort;
+  
+  private AtomicInteger currentLoad = new AtomicInteger(0);
 
   public SlaveManager(int port, String masterHostname, int masterPort) {
-    processes = new Vector<Thread>();
+    //processes = new Vector<Thread>();
+    processes = new HashMap<Thread, MigratableProcess>();
     console = System.console();
     this._hostname = CommunicationUtil.getLocalIPAddress();
     this._port = port;
@@ -37,7 +42,7 @@ public class SlaveManager implements ManagerContext {
       if (command.equals("")) {
         continue;
       } else if (command.equals("ps")) {
-        for (Thread process : processes) {
+        for (Thread process : processes.keySet()) {
           System.out.println(process.getName());
         }
       } else if (command.equals("quit")) {
@@ -60,7 +65,7 @@ public class SlaveManager implements ManagerContext {
                   .newInstance(arguments);
           Thread thread = new Thread(process);
           thread.setName(command);
-          processes.add(thread);
+          processes.put(thread, process);
         } catch (ClassNotFoundException e) {
           console.printf("Cannot find that class.");
         } catch (IllegalArgumentException e) {
@@ -112,4 +117,12 @@ public class SlaveManager implements ManagerContext {
     this._masterPort = _masterPort;
   }
 
+  public int getCurrentLoad() {
+    return currentLoad.get();
+  }
+
+  public void setCurrentLoad(int currentLoad) {
+    this.currentLoad.set(currentLoad);
+  }
+  
 }
