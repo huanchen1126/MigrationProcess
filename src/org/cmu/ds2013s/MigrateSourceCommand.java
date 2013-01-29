@@ -48,12 +48,12 @@ public class MigrateSourceCommand extends Command {
 
     // 4. encode port
     byte[] portbin = ByteBuffer.allocate(PORT_LEN).putInt(this.getPort()).array();
-    System.arraycopy(ipbin, 0, result, offset, PORT_LEN);
+    System.arraycopy(portbin, 0, result, offset, PORT_LEN);
     offset += PORT_LEN;
 
     // 5. encode migNum
     byte[] migNumbin = ByteBuffer.allocate(NUM_LEN).putInt(_migrateNum).array();
-    System.arraycopy(ipbin, 0, result, offset, NUM_LEN);
+    System.arraycopy(migNumbin, 0, result, offset, NUM_LEN);
     offset += NUM_LEN;
 
     return result;
