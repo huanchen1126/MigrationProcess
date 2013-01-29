@@ -1,6 +1,6 @@
 package org.cmu.ds2013s;
 
-public class ProcessMeta {
+public class ProcessMeta implements CompositeWorkItem {
   private String _rawcmd;
   
   private String _className;
@@ -27,5 +27,10 @@ public class ProcessMeta {
   
   public String getRawCommand() {
     return this._rawcmd;
+  }
+
+  @Override
+  public void showItem() {
+    System.out.format("%s\t%s\n", this._id, this._className);
   }
 }

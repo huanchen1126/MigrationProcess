@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class MasterManager implements ManagerContext {
+public class MasterManager implements ManagerContext, CompositeWorkItem {
   private static final Log logger = LogFactory.getLog(MasterManager.class);
 
   private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
@@ -63,8 +63,7 @@ public class MasterManager implements ManagerContext {
       if (command.equals("")) {
         continue;
       } else if (command.equals("ps")) {
-        // TODO: procedure for ps
-        continue;
+        this.showItem();
       } else if (command.equals("quit")) {
         System.exit(0);
       } else {
@@ -127,6 +126,15 @@ public class MasterManager implements ManagerContext {
    */
   public SlaveMeta chooseSlave() {
     return this._scstrategy.chooseSlave(getSlaves());
+  }
+
+  @Override
+  public void showItem() {
+    System.out.format("The whole system now has %d slaves:\n", this._slaves.size());
+    System.out.println("========================================================");
+    
+    for(SlaveMeta sm : this._slaves.values())
+      sm.showItem();
   }
 
 }
