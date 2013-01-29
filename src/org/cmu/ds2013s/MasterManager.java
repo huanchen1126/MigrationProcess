@@ -1,6 +1,7 @@
 package org.cmu.ds2013s;
 
 import java.io.Console;
+import java.net.ConnectException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -74,7 +75,12 @@ public class MasterManager implements ManagerContext, CompositeWorkItem {
 
         if (slave != null) {
           NewJobCommand njcmd = new NewJobCommand(this._ip, this._port, command);
-          CommunicationUtil.sendCommand(slave.getIp(), slave.getPort(), njcmd.toBytes());
+          try {
+            CommunicationUtil.sendCommand(slave.getIp(), slave.getPort(), njcmd.toBytes());
+          } catch (ConnectException e) {
+            // TODO : handle send failure.
+            System.err.println("Opps, my fault.");
+          }
         } else { // no slave exist
           System.err.println("Sorry, no slave connected right now. Your request cannot be done.");
         }

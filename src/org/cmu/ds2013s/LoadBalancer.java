@@ -1,6 +1,8 @@
 package org.cmu.ds2013s;
 
 import org.apache.commons.logging.*;
+
+import java.net.ConnectException;
 import java.util.*;
 
 public class LoadBalancer implements Runnable {
@@ -60,7 +62,11 @@ public class LoadBalancer implements Runnable {
       String host = task.getFrom().getIp();
       int port = task.getFrom().getPort();
       
-      CommunicationUtil.sendCommand(host, port, migcmd.toBytes());
+      try {
+        CommunicationUtil.sendCommand(host, port, migcmd.toBytes());
+      } catch (ConnectException e) {
+        System.out.println("Send migration request failed.");
+      }
     }
   }
 

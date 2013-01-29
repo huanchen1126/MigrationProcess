@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Main {
   public static void main(String[] args) {
-    CommunicationUtil.sendCommand("128.237.125.238", 12346, "hello".getBytes());
+//    CommunicationUtil.sendCommand("128.237.125.238", 12346, "hello".getBytes());
   }
   
   public static void SampleTransactionFileStream(String[] args) {
