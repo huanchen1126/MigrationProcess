@@ -106,6 +106,7 @@ public class SlaveMessageHandler extends MessageHandler {
       e.printStackTrace();
     }
     thread = new Thread(mp);
+    thread.setName(_context.getId()+" "+mp.toString());
     synchronized (_context.processes) {
       _context.processes.put(thread, mp);
       thread.start();
