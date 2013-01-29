@@ -26,7 +26,7 @@ public class DefaultLoadBalancerStrategy implements LoadBalancerStrategy {
     }
 
     // 3. compute the average workload for each slave
-    int averageload = loadsum / len;
+    double averageload = (double)loadsum / (double)len;
 
     // 4. sort meta
     Collections.sort(metas, new Comparator<SlaveMeta>() {
@@ -43,8 +43,9 @@ public class DefaultLoadBalancerStrategy implements LoadBalancerStrategy {
     int low = 0;
     int high = len - 1;
     while (low < high) {
-      if ((averageload - metas.get(low).getWorkload()) <= averageload * BALANCE_THREASHOLD
-              && (metas.get(high).getWorkload() - averageload) <= averageload * BALANCE_THREASHOLD) {
+      if ((metas.get(high).getWorkload() - metas.get(low).getWorkload() <= 2)
+              || ((averageload - (double) metas.get(low).getWorkload()) <= averageload * BALANCE_THREASHOLD 
+                  && ((double) metas.get(high).getWorkload() - averageload) <= averageload * BALANCE_THREASHOLD)) {
         break;
       } else {
         result.add(new MigrationTask(metas.get(high), metas.get(low), 1));

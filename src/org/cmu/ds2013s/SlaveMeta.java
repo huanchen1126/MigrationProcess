@@ -67,7 +67,7 @@ public class SlaveMeta implements CompositeWorkItem {
     Map<String, ProcessMeta> aliveps = new TreeMap<String, ProcessMeta>();
     
     synchronized (this._processes) {
-
+      
       for (String pm : pms) {
         String id = pm.substring(0, pm.indexOf(" "));
 
