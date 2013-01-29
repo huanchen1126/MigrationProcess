@@ -122,7 +122,7 @@ public abstract class Command {
           offset += Command.PORT_LEN;
 
           byte[] cmdinputbin = new byte[content.length - offset];
-          String cmdinput = new String(cmdinputbin);
+          String cmdinput = new String(ByteBuffer.wrap(content, offset, cmdinputbin.length).array());
 
           result = new NewJobCommand(ipstr, port, cmdinput);
           break;

@@ -72,8 +72,13 @@ public class MasterManager implements ManagerContext {
           slave = this.chooseSlave();
         }
         
-        Command njcmd = new NewJobCommand(this._ip, this._port, command);
-        CommunicationUtil.sendCommand(slave.getIp(), slave.getPort(), njcmd.toBytes());
+        if (slave != null) {
+          Command njcmd = new NewJobCommand(this._ip, this._port, command);
+          CommunicationUtil.sendCommand(slave.getIp(), slave.getPort(), njcmd.toBytes());
+          System.out.println(Arrays.toString(njcmd.toBytes()));// test
+        }else { // no slave exist
+          System.err.println("Sorry, no slave connected right now. Your request cannot be done.");
+        }
       }
     }
   }
