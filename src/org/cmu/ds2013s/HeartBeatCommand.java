@@ -1,22 +1,49 @@
 package org.cmu.ds2013s;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 public class HeartBeatCommand extends Command {
   
-  private int _workload;
-
-  public HeartBeatCommand(int wl, String host, int port) {
+  //private int _workload;
+  private byte[] _processList;
+  public HeartBeatCommand(String host, int port, byte[] processList) {
     super(CommandType.HEART_BEAT, host, port);
-    
-    this._workload = wl;
+    this._processList = processList;
+  }
+
+  public HeartBeatCommand(String host, int port, String[] processList) {
+    super(CommandType.HEART_BEAT, host, port);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    ObjectOutput out = null;
+    byte[] object = null;
+    try {
+      out = new ObjectOutputStream(bos);
+      out.writeObject(processList);
+      object = bos.toByteArray();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        out.close();
+        bos.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    this._processList = object;
   }
 
   @Override
   public byte[] toBytes() {
-    int totallen = Command.HEADER_LEN + NUM_LEN;
+    int totallen = Command.HEADER_LEN + this._processList.length;
     byte[] result = new byte[totallen];
     int offset = 0;
     
@@ -47,16 +74,27 @@ public class HeartBeatCommand extends Command {
     System.arraycopy(portbin, 0, result, offset, PORT_LEN);
     offset += PORT_LEN;
     
-    // 5. encode workload
-    byte[] wlbin = ByteBuffer.allocate(NUM_LEN).putInt(this._workload).array();
-    System.arraycopy(wlbin, 0, result, offset, NUM_LEN);
-    offset += NUM_LEN;
+    // 5. encode process list
+    System.arraycopy(this._processList, 0, result, offset, this._processList.length);
     
     return result;
   }
-  
-  public int getWorkLoad() {
-    return this._workload;
-  }
 
+  public String[] get_processList() {
+    ByteArrayInputStream in = new ByteArrayInputStream(this._processList);
+    String[]  processList= null;
+    ObjectInputStream is;
+    try {
+      is = new ObjectInputStream(in);
+      processList = (String[]) is.readObject();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return processList;
+  }
+  
 }

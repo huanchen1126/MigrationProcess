@@ -131,7 +131,7 @@ public class SlaveMessageHandler extends MessageHandler {
       MigratableProcess process = (MigratableProcess) theClass.getConstructor(String[].class)
               .newInstance(objargs);
       Thread thread = new Thread(process);
-      thread.setName(cmd);
+      thread.setName(_context.getId()+" "+process.toString());
       _context.processes.put(thread, process);
       thread.start();
       logger.info("JOB: "+cmd+" STARTED!");

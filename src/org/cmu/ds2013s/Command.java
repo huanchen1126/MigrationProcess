@@ -90,11 +90,11 @@ public abstract class Command {
 
           port = ByteBuffer.wrap(content, offset, Command.PORT_LEN).getInt();
           offset += Command.PORT_LEN;
+   
+          byte[] processlist = new byte[content.length - offset];
+          System.arraycopy(content, offset, processlist, 0, processlist.length);
 
-          int workload = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
-          offset += Command.NUM_LEN;
-
-          result = new HeartBeatCommand(workload, ipstr, port);
+          result = new HeartBeatCommand(ipstr, port,processlist);
           break;
         case MIGRATE_SOURCE:
           ipbin = new byte[Command.IP_LEN];
