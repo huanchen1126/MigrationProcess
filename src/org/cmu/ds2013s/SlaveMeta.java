@@ -74,8 +74,8 @@ public class SlaveMeta implements CompositeWorkItem {
         if (this._processes.containsKey(id)) {
           aliveps.put(id, this._processes.get(id));
         } else {
-          String rawcmd = pm.substring(pm.indexOf(" "));
-          aliveps.put(id, new ProcessMeta(rawcmd));
+          String rawcmd = pm.substring(pm.indexOf(" ") + 1);
+          aliveps.put(id, new ProcessMeta(id, rawcmd));
         }
       }
       
@@ -121,7 +121,7 @@ public class SlaveMeta implements CompositeWorkItem {
 
   @Override
   public void showItem() {
-    System.out.format("\n Slave %s:%d has %d workloads:\n", this._ip, this._port, this._workload);
+    System.out.format("\nSlave %s:%d has %d workloads:\n", this._ip, this._port, this._workload);
     System.out.println("=====================================================================");
     
     for(ProcessMeta pm : this._processes.values())

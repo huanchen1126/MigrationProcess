@@ -7,7 +7,8 @@ public class ProcessMeta implements CompositeWorkItem {
   
   private String _id;
   
-  public ProcessMeta(String rawcmd) {
+  public ProcessMeta(String id, String rawcmd) {
+    this._id = id;
     this._rawcmd = rawcmd;
     this._className = "";
 
