@@ -3,6 +3,7 @@ package org.cmu.ds2013s;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public abstract class Command {
   /**
@@ -12,7 +13,7 @@ public abstract class Command {
    * object to the other slave, slave -> slave
    */
   public enum CommandType {
-    HEART_BEAT(0), MIGRATE_SOURCE(1), MIGRATE_DEST(2), MIGRATE_SEND(3);
+    HEART_BEAT(0), MIGRATE_SOURCE(1), NEW_JOB(2), MIGRATE_SEND(3);
 
     private int _value;
 
@@ -110,7 +111,7 @@ public abstract class Command {
 
           result = new MigrateSourceCommand(ipstr, port, migNum);
           break;
-        case MIGRATE_DEST:
+        case NEW_JOB:
           ipbin = new byte[Command.IP_LEN];
           System.arraycopy(content, offset, ipbin, 0, Command.IP_LEN);
           offset += Command.IP_LEN;
@@ -120,10 +121,10 @@ public abstract class Command {
           port = ByteBuffer.wrap(content, offset, Command.PORT_LEN).getInt();
           offset += Command.PORT_LEN;
 
-          migNum = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
-          offset += Command.NUM_LEN;
+          byte[] cmdinputbin = new byte[content.length - offset];
+          String cmdinput = new String(cmdinputbin);
 
-          result = new MigrateDestCommand(ipstr, port, migNum);
+          result = new NewJobCommand(ipstr, port, cmdinput);
           break;
         case MIGRATE_SEND:
           ipbin = new byte[Command.IP_LEN];

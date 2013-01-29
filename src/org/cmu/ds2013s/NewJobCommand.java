@@ -4,18 +4,18 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-public class MigrateDestCommand extends Command {
+public class NewJobCommand extends Command {
 
-  private int _migrateNum;
+  private String _input;
 
-  public MigrateDestCommand(String host, int port, int migrateNum) {
-    super(CommandType.MIGRATE_DEST, host, port);
-    _migrateNum = migrateNum;
+  public NewJobCommand(String host, int port, String in) {
+    super(CommandType.NEW_JOB, host, port);
+    this._input = in;
   }
 
   @Override
   public byte[] toBytes() {
-    int totallen = Command.HEADER_LEN + NUM_LEN;
+    int totallen = Command.HEADER_LEN + this._input.length();
     byte[] result = new byte[totallen];
     int offset = 0;
 
@@ -28,7 +28,7 @@ public class MigrateDestCommand extends Command {
     // 2. encode command type
     int cmdtype = this.getType().getValue();
     byte[] typebin = ByteBuffer.allocate(CMD_LEN).putInt(cmdtype).array();
-    System.arraycopy(msglenbin, 0, result, offset, CMD_LEN);
+    System.arraycopy(typebin, 0, result, offset, CMD_LEN);
     offset += CMD_LEN;
 
     // 3. encode ip
@@ -44,13 +44,13 @@ public class MigrateDestCommand extends Command {
 
     // 4. encode port
     byte[] portbin = ByteBuffer.allocate(PORT_LEN).putInt(this.getPort()).array();
-    System.arraycopy(ipbin, 0, result, offset, PORT_LEN);
+    System.arraycopy(portbin, 0, result, offset, PORT_LEN);
     offset += PORT_LEN;
 
-    // 5. encode migNum
-    byte[] migNumbin = ByteBuffer.allocate(NUM_LEN).putInt(_migrateNum).array();
-    System.arraycopy(ipbin, 0, result, offset, NUM_LEN);
-    offset += NUM_LEN;
+    // 5. encode cmdinput string
+    byte[] cmdstrbin = this._input.getBytes();
+    System.arraycopy(cmdstrbin, 0, result, offset, cmdstrbin.length);
+    offset += cmdstrbin.length;
 
     return result;
   }
