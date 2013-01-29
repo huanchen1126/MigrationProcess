@@ -32,7 +32,7 @@ public class MigrateSourceCommand extends Command {
     // 2. encode command type
     int cmdtype = this.getType().getValue();
     byte[] typebin = ByteBuffer.allocate(CMD_LEN).putInt(cmdtype).array();
-    System.arraycopy(msglenbin, 0, result, offset, CMD_LEN);
+    System.arraycopy(typebin, 0, result, offset, CMD_LEN);
     offset += CMD_LEN;
 
     // 3. encode ip
@@ -42,7 +42,6 @@ public class MigrateSourceCommand extends Command {
       System.arraycopy(ipbin, 0, result, offset, IP_LEN);
       offset += IP_LEN;
     } catch (UnknownHostException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 
