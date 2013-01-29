@@ -1,20 +1,23 @@
 package org.cmu.ds2013s;
 
 public class SlaveMeta {
+  
+  private final long ALIVE_CYCLE = 8000; // 8 seconds
 
   private String _ip;
 
   private int _port;
 
   private int _workload;
-
-  private boolean _isalive;
   
-  public SlaveMeta(String ip, int p, int w, boolean alive) {
+  private long _timestamp;
+  
+  public SlaveMeta(String ip, int p, int w, long ts) {
     this._ip = ip;
     this._port = p;
     this._workload = w;
-    this._isalive = alive;
+    this._timestamp = ts;
+    
   }
 
   public String getIp() {
@@ -33,12 +36,16 @@ public class SlaveMeta {
     this._workload = _workload;
   }
 
-  public boolean isAlive() {
-    return _isalive;
+  public boolean isAlive(long curtime) {
+    return (curtime - this._timestamp <= ALIVE_CYCLE);
   }
-
-  public void setAlive(boolean _isalive) {
-    this._isalive = _isalive;
+  
+  public long getTimeStamp() {
+    return this._timestamp;
+  }
+  
+  public void setTimeStamp(long curtime) {
+    this._timestamp = curtime;
   }
 
   public static String getMapKey(String host, int port) {

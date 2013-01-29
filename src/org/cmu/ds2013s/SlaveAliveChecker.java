@@ -35,7 +35,7 @@ public class SlaveAliveChecker implements Runnable {
     List<SlaveMeta> tobedelete = new ArrayList<SlaveMeta>();
 
     for (SlaveMeta slave : slaves) {
-      if (!slave.isAlive()) {
+      if (!slave.isAlive(System.currentTimeMillis())) {
         tobedelete.add(slave);
       }
     }
@@ -44,12 +44,6 @@ public class SlaveAliveChecker implements Runnable {
       logger.info("Slave " + slave.getIp() + ":" + slave.getPort() + " has been removed.");
       this._manager.deleteSlaveMeta(SlaveMeta.getMapKey(slave));
     }
-
-    // flip the alive status for each slave
-    for (SlaveMeta slave : slaves) {
-      slave.setAlive(false);
-    }
-
   }
 
 }

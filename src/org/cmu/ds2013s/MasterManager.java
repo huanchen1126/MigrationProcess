@@ -1,8 +1,6 @@
 package org.cmu.ds2013s;
 
 import java.io.Console;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -95,13 +93,13 @@ public class MasterManager implements ManagerContext {
    */
   public void updateSlaveMeta(String key, int wl) {
     if (this._slaves.containsKey(key)) {
-      this._slaves.get(key).setAlive(true);
+      this._slaves.get(key).setTimeStamp(System.currentTimeMillis());
       this._slaves.get(key).setWorkload(wl);
     } else {
       logger.info("No such slave " + key + " in Master now. Register it.");
 
       SlaveMeta newslave = new SlaveMeta(SlaveMeta.getIpFromMapKey(key),
-              SlaveMeta.getPortFromMapKey(key), wl, true);
+              SlaveMeta.getPortFromMapKey(key), wl, System.currentTimeMillis());
       this._slaves.put(key, newslave);
     }
   }
