@@ -36,9 +36,9 @@ public class MasterMessageHandler extends MessageHandler {
     HeartBeatCommand hbcmd = (HeartBeatCommand) cmd;
     String slavekey = SlaveMeta.getMapKey(hbcmd.getHost(), hbcmd.getPort());
     
-    logger.info("Received a HEARTBEAT from " + slavekey + ". Load is " + hbcmd.getWorkLoad());
+    logger.info("Received a HEARTBEAT from " + slavekey + ". Load is " + hbcmd.get_processList().length);
     
-    this._context.updateSlaveMeta(slavekey, hbcmd.getWorkLoad(), null);    
+    this._context.updateSlaveMeta(slavekey, hbcmd.get_processList().length, hbcmd.get_processList());    
   }
 
 }
