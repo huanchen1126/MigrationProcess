@@ -1,5 +1,7 @@
 package org.cmu.ds2013s;
 
+import java.io.Console;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -12,8 +14,10 @@ public class MasterManager implements ManagerContext {
   private static final Log logger = LogFactory.getLog(MasterManager.class);
 
   private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
+  
+  public Console _console;
 
-  public static final int LOAD_BALANCE_CYCLE_SEC = 5;
+  public static final int LOAD_BALANCE_CYCLE_SEC = 7;
   
   public static final int ALIVE_CHECK_CYCLE_SEC = 2;
   
@@ -22,12 +26,16 @@ public class MasterManager implements ManagerContext {
   private int _port;
 
   private String _ip;
+  
+  private SlaveChooserStrategy _scstrategy;
 
   public MasterManager(int port) {
     this._port = port;
     this._ip = CommunicationUtil.getLocalIPAddress();
 
     this._slaves = Collections.synchronizedMap(new TreeMap<String, SlaveMeta>());
+    this._console = System.console();
+    this._scstrategy = new DefaultSlaveChooser();
   }
 
   @Override
@@ -47,6 +55,27 @@ public class MasterManager implements ManagerContext {
     // start alive checking
     SlaveAliveChecker aliveChecker = new SlaveAliveChecker(this);
     serviceSche.scheduleAtFixedRate(aliveChecker, ALIVE_CHECK_CYCLE_SEC, ALIVE_CHECK_CYCLE_SEC, TimeUnit.SECONDS);
+    
+    // start the console
+    while (true) {
+      String command = this._console.readLine("==> ").trim();
+      if (command.equals("")) {
+        continue;
+      } else if (command.equals("ps")) {
+        // TODO: procedure for ps
+        continue;
+      } else if (command.equals("quit")) {
+        System.exit(0);
+      } else {
+        SlaveMeta slave = null;
+        synchronized (this._slaves) {
+          slave = this.chooseSlave();
+        }
+        
+        Command njcmd = new NewJobCommand(this._ip, this._port, command);
+        CommunicationUtil.sendCommand(slave.getIp(), slave.getPort(), njcmd.toBytes());
+      }
+    }
   }
 
   /**
@@ -81,6 +110,13 @@ public class MasterManager implements ManagerContext {
   public List<SlaveMeta> getSlaves() {
     // create a copy of slave lists to prevent modification
     return new ArrayList<SlaveMeta>(this._slaves.values());
+  }
+  
+  /**
+   * choose a slave to assign new job
+   */
+  public SlaveMeta chooseSlave() {
+    return this._scstrategy.chooseSlave(getSlaves());
   }
 
 }
