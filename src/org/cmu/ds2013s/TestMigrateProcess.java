@@ -1,6 +1,10 @@
 package org.cmu.ds2013s;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class TestMigrateProcess implements MigratableProcess{
+  private static final Log logger = LogFactory.getLog(TestMigrateProcess.class);
   boolean suspend = false;
   public TestMigrateProcess(String[] args){
     
@@ -16,6 +20,7 @@ public class TestMigrateProcess implements MigratableProcess{
         e.printStackTrace();
       }
     }
+    logger.info("DOING TO TERMINATE..................");
     suspend = false;
   }
 

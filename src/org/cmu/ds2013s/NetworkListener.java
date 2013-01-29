@@ -19,6 +19,7 @@ public class NetworkListener implements Runnable {
 
   public NetworkListener(Class c, int port, ManagerContext context) {
     try {
+      logger.info("Received a command from master");
       _class = c;
       _port = port;
       if (!MessageHandler.class.isAssignableFrom(_class)) {

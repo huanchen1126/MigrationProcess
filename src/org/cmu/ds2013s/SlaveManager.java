@@ -37,11 +37,10 @@ public class SlaveManager implements ManagerContext {
     heartBeatSender.start();
     Thread listener = new Thread(new NetworkListener(SlaveMessageHandler.class, _port, this));
     listener.start();
-    int cnt = 5;
-    //while (true) {
-    while(cnt-->0){
-      //String command = console.readLine("==> ").trim();
-      String command = "";
+    //org.cmu.ds2013s.TestMigrateProcess
+    int cnt = 0;
+    while (true) {
+      String command = console.readLine("==> ").trim();
       if (command.equals("")) {
         continue;
       } else if (command.equals("ps")) {
@@ -61,14 +60,15 @@ public class SlaveManager implements ManagerContext {
           className = command.substring(0, spaceIndex);
           arguments = command.substring(spaceIndex + 1).split(" ");
         }
-
+        Object[] objargs = {arguments};
         try {
           Class theClass = Class.forName(className);
           MigratableProcess process = (MigratableProcess) theClass.getConstructor(String[].class)
-                  .newInstance(arguments);
+                  .newInstance(objargs);
           Thread thread = new Thread(process);
-          thread.setName(command);
+          thread.setName(command+":"+cnt);
           processes.put(thread, process);
+          thread.start();
         } catch (ClassNotFoundException e) {
           console.printf("Cannot find that class.");
         } catch (IllegalArgumentException e) {
