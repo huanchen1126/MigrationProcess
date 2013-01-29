@@ -6,8 +6,9 @@ import org.apache.commons.logging.LogFactory;
 public class TestMigrateProcess implements MigratableProcess{
   private static final Log logger = LogFactory.getLog(TestMigrateProcess.class);
   volatile boolean suspend = false;
+  String[] args = null;
   public TestMigrateProcess(String[] args){
-    
+    this.args = args;
   }
   @Override
   public void run() {
@@ -29,6 +30,14 @@ public class TestMigrateProcess implements MigratableProcess{
     // TODO Auto-generated method stub
     suspend=true;
     while(suspend);
+  }
+  
+  public String toString(){
+    String cmd = this.getClass().getName();
+    for(String s : args){
+      cmd = cmd + " " + s;
+    }
+    return cmd;
   }
 
 }

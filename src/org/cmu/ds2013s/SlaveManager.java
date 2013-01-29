@@ -20,6 +20,8 @@ public class SlaveManager implements ManagerContext {
   private int _masterPort;
   
   private AtomicInteger currentLoad = new AtomicInteger(0);
+  
+  private AtomicInteger _id = new AtomicInteger(1);
 
   public SlaveManager(int port, String masterHostname, int masterPort) {
     //processes = new Vector<Thread>();
@@ -86,5 +88,10 @@ public class SlaveManager implements ManagerContext {
   public void setCurrentLoad(int currentLoad) {
     this.currentLoad.set(currentLoad);
   }
+
+  public int getId() {
+    return _id.incrementAndGet();
+  }
+
   
 }
