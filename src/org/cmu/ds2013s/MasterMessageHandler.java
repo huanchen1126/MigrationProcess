@@ -38,7 +38,7 @@ public class MasterMessageHandler extends MessageHandler {
     
     logger.info("Received a HEARTBEAT from " + slavekey + ". Load is " + hbcmd.getWorkLoad());
     
-    this._context.updateSlaveMeta(slavekey, hbcmd.getWorkLoad());    
+    this._context.updateSlaveMeta(slavekey, hbcmd.getWorkLoad(), null);    
   }
 
 }

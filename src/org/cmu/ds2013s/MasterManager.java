@@ -90,9 +90,12 @@ public class MasterManager implements ManagerContext {
    *          the key of the slave in the map
    * @param wl
    *          the newest workload of this slave
+   * @param pms
+   *          the processes status
    */
-  public void updateSlaveMeta(String key, int wl) {
+  public void updateSlaveMeta(String key, int wl, String[] pms) {
     if (this._slaves.containsKey(key)) {
+      // this slave exist, update its timestamp and worldload
       this._slaves.get(key).setTimeStamp(System.currentTimeMillis());
       this._slaves.get(key).setWorkload(wl);
     } else {
@@ -102,6 +105,8 @@ public class MasterManager implements ManagerContext {
               SlaveMeta.getPortFromMapKey(key), wl, System.currentTimeMillis());
       this._slaves.put(key, newslave);
     }
+    
+    this._slaves.get(key).updateProcessMeta(pms);
   }
 
   public void deleteSlaveMeta(String key) {

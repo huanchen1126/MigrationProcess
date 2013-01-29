@@ -1,5 +1,7 @@
 package org.cmu.ds2013s;
 
+import java.util.*;
+
 public class SlaveMeta {
   
   private final long ALIVE_CYCLE = 8000; // 8 seconds
@@ -12,12 +14,20 @@ public class SlaveMeta {
   
   private long _timestamp;
   
+  private Map<String, ProcessMeta> _processes;
+
   public SlaveMeta(String ip, int p, int w, long ts) {
     this._ip = ip;
     this._port = p;
     this._workload = w;
     this._timestamp = ts;
     
+    this._processes = Collections.synchronizedMap(new TreeMap<String, ProcessMeta>());
+    
+  }
+  
+  public void addProcess(ProcessMeta pm) {
+    this._processes.put(pm.getId(), pm);
   }
 
   public String getIp() {
@@ -46,6 +56,32 @@ public class SlaveMeta {
   
   public void setTimeStamp(long curtime) {
     this._timestamp = curtime;
+  }
+  
+  /**
+   * 
+   * @param pms
+   *          the status string array for this slave
+   */
+  public void updateProcessMeta(String[] pms) {
+    Map<String, ProcessMeta> aliveps = new TreeMap<String, ProcessMeta>();
+    
+    synchronized (this._processes) {
+
+      for (String pm : pms) {
+        String id = pm.substring(0, pm.indexOf(" "));
+
+        if (this._processes.containsKey(id)) {
+          aliveps.put(id, this._processes.get(id));
+        } else {
+          String rawcmd = pm.substring(pm.indexOf(" "));
+          aliveps.put(id, new ProcessMeta(rawcmd));
+        }
+      }
+      
+      this._processes.clear();
+      this._processes.putAll(aliveps);
+    }
   }
 
   public static String getMapKey(String host, int port) {
