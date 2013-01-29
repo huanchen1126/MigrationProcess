@@ -93,7 +93,7 @@ public abstract class Command {
           int workload = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
           offset += Command.NUM_LEN;
 
-          result = new HeartBeatCommand(cmdtype, workload, ipstr, port);
+          result = new HeartBeatCommand(workload, ipstr, port);
           break;
         case MIGRATE_SOURCE:
           ipbin = new byte[Command.IP_LEN];
@@ -108,7 +108,7 @@ public abstract class Command {
           migNum = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
           offset += Command.NUM_LEN;
 
-          result = new MigrateSourceCommand(cmdtype, ipstr, port, migNum);
+          result = new MigrateSourceCommand(ipstr, port, migNum);
         case MIGRATE_DEST:
           ipbin = new byte[Command.IP_LEN];
           System.arraycopy(content, offset, ipbin, 0, Command.IP_LEN);
@@ -122,7 +122,7 @@ public abstract class Command {
           migNum = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
           offset += Command.NUM_LEN;
 
-          result = new MigrateDestCommand(cmdtype, ipstr, port, migNum);
+          result = new MigrateDestCommand(ipstr, port, migNum);
         case MIGRATE_SEND:
           ipbin = new byte[Command.IP_LEN];
           System.arraycopy(content, offset, ipbin, 0, Command.IP_LEN);
@@ -136,7 +136,7 @@ public abstract class Command {
           byte[] object = new byte[content.length - offset];
           System.arraycopy(content, offset, object, 0, object.length);
 
-          result = new MigrateSendCommand(cmdtype,ipstr, port, object);
+          result = new MigrateSendCommand(ipstr, port, object);
       }
 
     } catch (UnknownHostException e) {

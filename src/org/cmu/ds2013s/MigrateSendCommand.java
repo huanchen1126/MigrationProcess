@@ -8,8 +8,8 @@ public class MigrateSendCommand extends Command {
 
   private byte[] _object;
   
-  public MigrateSendCommand(CommandType type, String host, int port, byte[] objectraw) {
-    super(type, host, port);
+  public MigrateSendCommand(String host, int port, byte[] objectraw) {
+    super(CommandType.MIGRATE_SEND, host, port);
     this._object = objectraw;
   }
 

@@ -5,7 +5,7 @@ import java.util.*;
 
 public class LoadBalancer implements Runnable {
   private static final Log logger = LogFactory.getLog(LoadBalancer.class);
-  
+
   private MasterManager _manager;
 
   private LoadBalancerStrategy _lbstrategy;
@@ -17,7 +17,7 @@ public class LoadBalancer implements Runnable {
 
   public void run() {
     logger.info("LoadBalancer run.");
-    
+
     this.doLoadBalance();
   }
 
@@ -38,7 +38,7 @@ public class LoadBalancer implements Runnable {
   private List<MigrationTask> getLoadBalanceTasks() {
     return this._lbstrategy.getLoadBalanceTasks(this._manager.getSlaves());
   }
-  
+
   /**
    * execute load balance job
    * 
@@ -53,7 +53,14 @@ public class LoadBalancer implements Runnable {
     }
 
     for (MigrationTask task : tasks) {
-      // TODO: do sth for each task
+      System.out.println("migrate " + task.getNumber() + " tasks from " + task.getFrom().getPort()
+              + " to " + task.getTo().getPort());
+      
+      Command migcmd = new MigrateSourceCommand(task);
+      String host = task.getFrom().getIp();
+      int port = task.getFrom().getPort();
+      
+      CommunicationUtil.sendCommand(host, port, migcmd.toBytes());
     }
   }
 

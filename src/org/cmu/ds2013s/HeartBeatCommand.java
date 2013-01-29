@@ -8,8 +8,8 @@ public class HeartBeatCommand extends Command {
   
   private int _workload;
 
-  public HeartBeatCommand(CommandType type, int wl, String host, int port) {
-    super(type, host, port);
+  public HeartBeatCommand(int wl, String host, int port) {
+    super(CommandType.HEART_BEAT, host, port);
     
     this._workload = wl;
   }

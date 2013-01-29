@@ -8,9 +8,13 @@ public class MigrateSourceCommand extends Command {
 
   private int _migrateNum;
 
-  public MigrateSourceCommand(CommandType type, String host, int port, int migrateNum) {
-    super(type, host, port);
+  public MigrateSourceCommand(String host, int port, int migrateNum) {
+    super(CommandType.MIGRATE_SOURCE, host, port);
     _migrateNum = migrateNum;
+  }
+  
+  public MigrateSourceCommand(MigrationTask task) {
+    this(task.getTo().getIp(), task.getTo().getPort(), task.getNumber());
   }
 
   @Override

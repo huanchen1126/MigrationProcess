@@ -8,8 +8,8 @@ public class MigrateDestCommand extends Command {
 
   private int _migrateNum;
 
-  public MigrateDestCommand(CommandType type, String host, int port, int migrateNum) {
-    super(type, host, port);
+  public MigrateDestCommand(String host, int port, int migrateNum) {
+    super(CommandType.MIGRATE_DEST, host, port);
     _migrateNum = migrateNum;
   }
 

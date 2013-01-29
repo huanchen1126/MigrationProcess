@@ -43,7 +43,7 @@ public class SlaveMessageHandler extends MessageHandler {
     MigrateSourceCommand msc = (MigrateSourceCommand) command;
     Thread toMgr = null;
     MigratableProcess mp = null;
-    
+
     /* get one process to migrate */
     synchronized (_context.processes) {
       if (_context.processes.size() == 0)
@@ -74,8 +74,8 @@ public class SlaveMessageHandler extends MessageHandler {
           e.printStackTrace();
         }
       }
-      MigrateSendCommand toSend = new MigrateSendCommand(CommandType.MIGRATE_SEND,
-              _context.get_hostname(), _context.get_port(), object);
+      MigrateSendCommand toSend = new MigrateSendCommand(_context.get_hostname(),
+              _context.get_port(), object);
       CommunicationUtil.sendCommand(msc.getHost(), msc.getPort(), command.toBytes());
     }
   }
@@ -97,7 +97,7 @@ public class SlaveMessageHandler extends MessageHandler {
     } catch (ClassNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-    }  
+    }
     thread = new Thread(mp);
     synchronized (_context.processes) {
       _context.processes.put(thread, mp);

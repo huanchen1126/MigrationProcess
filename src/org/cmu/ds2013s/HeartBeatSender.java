@@ -42,9 +42,8 @@ public class HeartBeatSender implements Runnable {
         }
         /* send heart beat here */
         logger.info("heart beat sending ..." + slaveManager.getCurrentLoad());
-        HeartBeatCommand command = new HeartBeatCommand(CommandType.HEART_BEAT, slaveManager
-                .getCurrentLoad(), slaveManager.get_hostname(),
-                slaveManager.get_port());
+        HeartBeatCommand command = new HeartBeatCommand(slaveManager.getCurrentLoad(), slaveManager
+                .get_hostname(), slaveManager.get_port());
         CommunicationUtil.sendCommand(slaveManager.get_masterHostname(),
                 slaveManager.get_masterPort(), command.toBytes());
       }
