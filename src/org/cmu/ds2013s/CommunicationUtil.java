@@ -2,6 +2,7 @@ package org.cmu.ds2013s;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -28,8 +29,9 @@ public class CommunicationUtil {
   }
   /**
    * send command
+   * @throws ConnectException 
    * */
-  public static void sendCommand(String ip, int port, byte[] content){
+  public static void sendCommand(String ip, int port, byte[] content) throws ConnectException {
     Socket socket = null;
     try {
       socket = new Socket(InetAddress.getByName(ip),port);
@@ -38,9 +40,10 @@ public class CommunicationUtil {
       out.close();
       socket.close();
     } catch (UnknownHostException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
-    } catch (IOException e) {
+    } catch(ConnectException e){
+      throw e;
+    }catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }

@@ -21,7 +21,7 @@ public class SlaveManager implements ManagerContext {
   
   private AtomicInteger currentLoad = new AtomicInteger(0);
   
-  private AtomicInteger _id = new AtomicInteger(1);
+  private AtomicInteger _id = new AtomicInteger(0);
 
   public SlaveManager(int port, String masterHostname, int masterPort) {
     //processes = new Vector<Thread>();

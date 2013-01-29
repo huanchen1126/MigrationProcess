@@ -34,6 +34,8 @@ public class TestMigrateProcess implements MigratableProcess{
   
   public String toString(){
     String cmd = this.getClass().getName();
+    if(args ==null)
+       return cmd;
     for(String s : args){
       cmd = cmd + " " + s;
     }

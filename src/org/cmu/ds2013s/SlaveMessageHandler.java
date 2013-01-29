@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.Arrays;
 
@@ -80,7 +81,11 @@ public class SlaveMessageHandler extends MessageHandler {
       MigrateSendCommand toSend = new MigrateSendCommand(_context.get_hostname(),
               _context.get_port(), object);
       System.out.println(Arrays.toString(toSend.toBytes()));
-      CommunicationUtil.sendCommand(msc.getHost(), msc.getPort(), toSend.toBytes());
+      try {
+        CommunicationUtil.sendCommand(msc.getHost(), msc.getPort(), toSend.toBytes());
+      } catch (ConnectException e) {
+        handleSend(toSend); // if failed, send to self
+      }
     }
   }
 
@@ -96,10 +101,8 @@ public class SlaveMessageHandler extends MessageHandler {
       is = new ObjectInputStream(in);
       mp = (MigratableProcess) is.readObject();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     thread = new Thread(mp);
@@ -111,7 +114,6 @@ public class SlaveMessageHandler extends MessageHandler {
 
   public void handleNewJob(Command command) {
     NewJobCommand njc = (NewJobCommand) command;
-    //logger.info("MESSAGE: "+Arrays.toString(njc.toBytes()));
     String cmd = njc.get_input();
     int spaceIndex = cmd.indexOf(' ');
     String className = "";

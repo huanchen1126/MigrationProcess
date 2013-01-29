@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -47,15 +49,19 @@ public class HeartBeatSender implements Runnable {
             slaveManager.processes.remove(thread);
           }
           slaveManager.setCurrentLoad(slaveManager.processes.size());
-          processlist = (String[]) aliveProcessName.toArray();
+          processlist = new String[aliveProcessName.size()];
+          aliveProcessName.toArray(processlist);
         }
         /* send heart beat here */
-
         logger.info("heart beat sending ..." + slaveManager.getCurrentLoad());
         HeartBeatCommand command = new HeartBeatCommand(slaveManager.get_hostname(), slaveManager
                 .get_port(), processlist);
-        CommunicationUtil.sendCommand(slaveManager.get_masterHostname(),
-                slaveManager.get_masterPort(), command.toBytes());
+        try {
+          CommunicationUtil.sendCommand(slaveManager.get_masterHostname(),
+                  slaveManager.get_masterPort(), command.toBytes());
+        } catch (ConnectException e) {
+          e.printStackTrace();
+        }
       }
     }, 0, HEART_BEAT_PERIOD, TimeUnit.SECONDS);
   }
