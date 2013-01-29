@@ -14,29 +14,21 @@ public class DefaultLoadBalancerStrategy implements LoadBalancerStrategy {
   public List<MigrationTask> getLoadBalanceTasks(List<SlaveMeta> metas) {
     List<MigrationTask> result = new ArrayList<MigrationTask>();
 
-    // 1. get a set of SlaveMeta copies
-//    List<SlaveMeta> metas = new ArrayList<SlaveMeta>();
-//    metas.addAll(slaves);
-
-    // 2. get the number of slaves
+    // 1. get the number of slaves
     int len = metas.size();
     if (len == 0)
       return result;
 
-    // 3. get the total workload of the whole system
-
+    // 2. get the total workload of the whole system
     int loadsum = 0;
     for (SlaveMeta slave : metas) {
-      logger.info("Total Slaves: " + len + ". Slave " + slave.getIp() + " has " + slave.getWorkload()
-              + " workloads. Balancing");
-
       loadsum += slave.getWorkload();
     }
 
-    // 4. compute the average workload for each slave
+    // 3. compute the average workload for each slave
     int averageload = loadsum / len;
 
-    // 5. sort meta
+    // 4. sort meta
     Collections.sort(metas, new Comparator<SlaveMeta>() {
 
       @Override
@@ -46,13 +38,13 @@ public class DefaultLoadBalancerStrategy implements LoadBalancerStrategy {
 
     });
 
-    // 6. balance those slaves whose workload is far away than average
+    // 5. balance those slaves whose workload is far away than average
     // in BALANCE_THREASHOLD percent.
     int low = 0;
     int high = len - 1;
     while (low < high) {
       if ((averageload - metas.get(low).getWorkload()) <= averageload * BALANCE_THREASHOLD
-              && (metas.get(low).getWorkload() - averageload) >= averageload * BALANCE_THREASHOLD) {
+              && (metas.get(high).getWorkload() - averageload) <= averageload * BALANCE_THREASHOLD) {
         break;
       } else {
         result.add(new MigrationTask(metas.get(high), metas.get(low), 1));

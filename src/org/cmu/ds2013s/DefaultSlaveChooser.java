@@ -6,11 +6,19 @@ public class DefaultSlaveChooser implements SlaveChooserStrategy {
 
   @Override
   public SlaveMeta chooseSlave(List<SlaveMeta> slaves) {
-    // TODO: temp code
     if (slaves.isEmpty())
       return null;
-    else
-      return slaves.get(0);
+    else {
+      SlaveMeta minwl = slaves.get(0);
+      
+      for(SlaveMeta sm : slaves) {
+        if (sm.getWorkload() < minwl.getWorkload()) {
+          minwl = sm;
+        }
+      }
+      
+      return minwl;
+    }
   }
 
 }

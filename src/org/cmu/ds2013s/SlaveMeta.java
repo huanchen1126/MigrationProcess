@@ -2,7 +2,7 @@ package org.cmu.ds2013s;
 
 import java.util.*;
 
-public class SlaveMeta {
+public class SlaveMeta implements CompositeWorkItem {
   
   private final long ALIVE_CYCLE = 8000; // 8 seconds
 
@@ -74,8 +74,8 @@ public class SlaveMeta {
         if (this._processes.containsKey(id)) {
           aliveps.put(id, this._processes.get(id));
         } else {
-          String rawcmd = pm.substring(pm.indexOf(" "));
-          aliveps.put(id, new ProcessMeta(rawcmd));
+          String rawcmd = pm.substring(pm.indexOf(" ") + 1);
+          aliveps.put(id, new ProcessMeta(id, rawcmd));
         }
       }
       
@@ -117,5 +117,14 @@ public class SlaveMeta {
     }
     
     return Integer.parseInt(ele[1]);
+  }
+
+  @Override
+  public void showItem() {
+    System.out.format("\nSlave %s:%d has %d workloads:\n", this._ip, this._port, this._workload);
+    System.out.println("=====================================================================");
+    
+    for(ProcessMeta pm : this._processes.values())
+      pm.showItem();
   }
 }
