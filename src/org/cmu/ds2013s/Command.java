@@ -109,6 +109,7 @@ public abstract class Command {
           offset += Command.NUM_LEN;
 
           result = new MigrateSourceCommand(ipstr, port, migNum);
+          break;
         case MIGRATE_DEST:
           ipbin = new byte[Command.IP_LEN];
           System.arraycopy(content, offset, ipbin, 0, Command.IP_LEN);
@@ -123,6 +124,7 @@ public abstract class Command {
           offset += Command.NUM_LEN;
 
           result = new MigrateDestCommand(ipstr, port, migNum);
+          break;
         case MIGRATE_SEND:
           ipbin = new byte[Command.IP_LEN];
           System.arraycopy(content, offset, ipbin, 0, Command.IP_LEN);

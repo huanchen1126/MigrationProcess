@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +44,6 @@ public class SlaveMessageHandler extends MessageHandler {
     MigrateSourceCommand msc = (MigrateSourceCommand) command;
     Thread toMgr = null;
     MigratableProcess mp = null;
-
     /* get one process to migrate */
     synchronized (_context.processes) {
       if (_context.processes.size() == 0)
@@ -76,7 +76,8 @@ public class SlaveMessageHandler extends MessageHandler {
       }
       MigrateSendCommand toSend = new MigrateSendCommand(_context.get_hostname(),
               _context.get_port(), object);
-      CommunicationUtil.sendCommand(msc.getHost(), msc.getPort(), command.toBytes());
+      System.out.println(Arrays.toString(toSend.toBytes()));
+      CommunicationUtil.sendCommand(msc.getHost(), msc.getPort(), toSend.toBytes());
     }
   }
 

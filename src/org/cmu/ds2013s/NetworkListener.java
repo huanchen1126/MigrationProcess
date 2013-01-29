@@ -44,8 +44,12 @@ public class NetworkListener implements Runnable {
       while (listening) {
         logger.info("Listening");
         // Thread thread = new Thread(new handler(serverSocket.accept()));
+        Socket socket = serverSocket.accept();
+        //Object[] objargs1 = {socket};
+        //Object[] objargs2 = {_context};
+        Object[] objargs = {socket,_context};
         Thread thread = new Thread((Runnable) _class.getConstructor(Socket.class,
-                ManagerContext.class).newInstance(serverSocket.accept(),_context));
+                ManagerContext.class).newInstance(objargs));
         thread.start();
         logger.info("Accepted");
       }

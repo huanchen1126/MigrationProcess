@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class TestMigrateProcess implements MigratableProcess{
   private static final Log logger = LogFactory.getLog(TestMigrateProcess.class);
-  boolean suspend = false;
+  volatile boolean suspend = false;
   public TestMigrateProcess(String[] args){
     
   }
