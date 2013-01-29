@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.Arrays;
 
@@ -35,6 +36,10 @@ public class SlaveMessageHandler extends MessageHandler {
         logger.info("Slave received command MIGRATE_SEND");
         handleSend(command);
         break;
+      case NEW_JOB:
+        logger.info("Slave received command NEW_JOB");
+        handleNewJob(command);
+        break;
       default:
         break;
     }
@@ -63,14 +68,12 @@ public class SlaveMessageHandler extends MessageHandler {
         out.writeObject(mp);
         object = bos.toByteArray();
       } catch (IOException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       } finally {
         try {
           out.close();
           bos.close();
         } catch (IOException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
       }
@@ -103,6 +106,49 @@ public class SlaveMessageHandler extends MessageHandler {
     synchronized (_context.processes) {
       _context.processes.put(thread, mp);
       thread.start();
+    }
+  }
+
+  public void handleNewJob(Command command) {
+    NewJobCommand njc = (NewJobCommand) command;
+    //logger.info("MESSAGE: "+Arrays.toString(njc.toBytes()));
+    String cmd = njc.get_input();
+    int spaceIndex = cmd.indexOf(' ');
+    String className = "";
+    String[] arguments = null;
+
+    if (spaceIndex == -1) {
+      className = cmd;
+    } else {
+      className = cmd.substring(0, spaceIndex);
+      arguments = cmd.substring(spaceIndex + 1).split(" ");
+    }
+    Object[] objargs = { arguments };
+    Class theClass = null;
+    try {
+      logger.info("CLASSNAME: "+className);
+      theClass = Class.forName(className);
+      MigratableProcess process = (MigratableProcess) theClass.getConstructor(String[].class)
+              .newInstance(objargs);
+      Thread thread = new Thread(process);
+      thread.setName(cmd);
+      _context.processes.put(thread, process);
+      thread.start();
+      logger.info("JOB: "+cmd+" STARTED!");
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+    } catch (SecurityException e) {
+      e.printStackTrace();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
     }
   }
 }

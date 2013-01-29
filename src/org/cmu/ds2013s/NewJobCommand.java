@@ -55,4 +55,11 @@ public class NewJobCommand extends Command {
     return result;
   }
 
+  public String get_input() {
+    return _input;
+  }
+
+  public void set_input(String _input) {
+    this._input = _input;
+  }
 }

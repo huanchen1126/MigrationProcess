@@ -27,10 +27,8 @@ public class NetworkListener implements Runnable {
       }
       this._context = context;
     } catch (ClassNotFoundException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -43,10 +41,7 @@ public class NetworkListener implements Runnable {
       serverSocket = new ServerSocket(this._port);
       while (listening) {
         logger.info("Listening");
-        // Thread thread = new Thread(new handler(serverSocket.accept()));
         Socket socket = serverSocket.accept();
-        //Object[] objargs1 = {socket};
-        //Object[] objargs2 = {_context};
         Object[] objargs = {socket,_context};
         Thread thread = new Thread((Runnable) _class.getConstructor(Socket.class,
                 ManagerContext.class).newInstance(objargs));

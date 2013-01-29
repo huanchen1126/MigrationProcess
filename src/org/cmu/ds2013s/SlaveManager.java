@@ -38,53 +38,12 @@ public class SlaveManager implements ManagerContext {
     Thread listener = new Thread(new NetworkListener(SlaveMessageHandler.class, _port, this));
     listener.start();
     //org.cmu.ds2013s.TestMigrateProcess
-    int cnt = 0;
-    while (true) {
-      String command = console.readLine("==> ").trim();
-      if (command.equals("")) {
-        continue;
-      } else if (command.equals("ps")) {
-        for (Thread process : processes.keySet()) {
-          System.out.println(process.getName());
-        }
-      } else if (command.equals("quit")) {
-        System.exit(0);
-      } else {
-        int spaceIndex = command.indexOf(' ');
-        String className = "";
-        String[] arguments = null;
-
-        if (spaceIndex == -1) {
-          className = command;
-        } else {
-          className = command.substring(0, spaceIndex);
-          arguments = command.substring(spaceIndex + 1).split(" ");
-        }
-        Object[] objargs = {arguments};
-        try {
-          Class theClass = Class.forName(className);
-          MigratableProcess process = (MigratableProcess) theClass.getConstructor(String[].class)
-                  .newInstance(objargs);
-          Thread thread = new Thread(process);
-          thread.setName(command+":"+cnt);
-          processes.put(thread, process);
-          thread.start();
-        } catch (ClassNotFoundException e) {
-          console.printf("Cannot find that class.");
-        } catch (IllegalArgumentException e) {
-          console.printf("Illegal argument for this class.");
-        } catch (SecurityException e) {
-          console.printf("Illegal argument for this class.");
-        } catch (InstantiationException e) {
-          console.printf("Illegal argument for this class.");
-        } catch (IllegalAccessException e) {
-          console.printf("Illegal argument for this class.");
-        } catch (InvocationTargetException e) {
-          console.printf("Illegal argument for this class.");
-        } catch (NoSuchMethodException e) {
-          console.printf("Illegal argument for this class.");
-        }
-      }
+    try {
+      heartBeatSender.join();
+      listener.join();
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
   }
 
