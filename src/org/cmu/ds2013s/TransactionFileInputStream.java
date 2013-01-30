@@ -75,6 +75,22 @@ public class TransactionFileInputStream extends InputStream implements Serializa
     return result;
   }
   
-  
+  public synchronized String readLine() throws IOException {
+    // open the stream
+    RandomAccessFile instream = new RandomAccessFile(this._fileName, "r");
+    
+    // skip to the right place
+    instream.seek(this._offset);
+    
+    String line = instream.readLine();
+    if (line != null) {
+      this._offset += line.length() + 1;
+    }
+    
+    // close the stream;
+    instream.close();
+    
+    return line;
+  }
 
 }
