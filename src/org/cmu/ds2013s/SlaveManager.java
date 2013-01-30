@@ -40,6 +40,7 @@ public class SlaveManager implements ManagerContext {
     Thread listener = new Thread(new NetworkListener(SlaveMessageHandler.class, _port, this));
     listener.start();
     //org.cmu.ds2013s.TestMigrateProcess
+    //org.cmu.ds2013s.WebpageCrawler url.txt html2.txt
     try {
       heartBeatSender.join();
       listener.join();

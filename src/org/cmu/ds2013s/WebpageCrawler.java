@@ -1,15 +1,16 @@
 package org.cmu.ds2013s;
 
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Scanner;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class CopyFile implements MigratableProcess {
-
+public class WebpageCrawler implements MigratableProcess {
   private static final Log logger = LogFactory.getLog(TestMigrateProcess.class);
 
   volatile boolean suspend = false;
@@ -20,7 +21,7 @@ public class CopyFile implements MigratableProcess {
 
   TransactionFileOutputStream outputStream = null;
 
-  public CopyFile(String[] args) {
+  public WebpageCrawler(String[] args) {
     if (args.length != 2)
       return;
     this.args = args;
@@ -39,7 +40,8 @@ public class CopyFile implements MigratableProcess {
         String s = this.inputStream.readLine();
         if (s == null)
           break;
-        writer.println(s);
+        
+        writer.println(getHTML(s));
         writer.flush();
         Thread.sleep(500);
       } catch (InterruptedException e) {
@@ -51,7 +53,6 @@ public class CopyFile implements MigratableProcess {
 
     if (writer != null)
       writer.close();
-    logger.info("DOING TO TERMINATE..................");
     suspend = false;
   }
 
@@ -73,4 +74,24 @@ public class CopyFile implements MigratableProcess {
     return cmd;
   }
 
+  public String getHTML(String targetURL) {
+    URL url;
+    HttpURLConnection conn;
+    BufferedReader rd;
+    String line;
+    String result = "";
+    try {
+      url = new URL(targetURL);
+      conn = (HttpURLConnection) url.openConnection();
+      conn.setRequestMethod("GET");
+      rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+      while ((line = rd.readLine()) != null) {
+        result += line;
+      }
+      rd.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return result;
+  }
 }
