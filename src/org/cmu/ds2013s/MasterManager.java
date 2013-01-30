@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +29,8 @@ public class MasterManager implements ManagerContext, CompositeWorkItem {
   private String _ip;
 
   private SlaveChooserStrategy _scstrategy;
+  
+  private AtomicInteger _nextid = new AtomicInteger(0);
 
   public MasterManager(int port) {
     this._port = port;
@@ -74,7 +77,7 @@ public class MasterManager implements ManagerContext, CompositeWorkItem {
         }
 
         if (slave != null) {
-          NewJobCommand njcmd = new NewJobCommand(this._ip, this._port, command);
+          NewJobCommand njcmd = new NewJobCommand(this._ip, this._port, this.assignJobId(), command);
           try {
             CommunicationUtil.sendCommand(slave.getIp(), slave.getPort(), njcmd.toBytes());
           } catch (ConnectException e) {
@@ -132,6 +135,10 @@ public class MasterManager implements ManagerContext, CompositeWorkItem {
    */
   public SlaveMeta chooseSlave() {
     return this._scstrategy.chooseSlave(getSlaves());
+  }
+  
+  private int assignJobId() {
+    return this._nextid.incrementAndGet();
   }
 
   @Override
