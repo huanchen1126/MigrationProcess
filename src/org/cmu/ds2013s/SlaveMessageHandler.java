@@ -97,6 +97,7 @@ public class SlaveMessageHandler extends MessageHandler {
     MigratableProcess mp = null;
     Thread thread = null;
     ObjectInputStream is;
+    
     try {
       is = new ObjectInputStream(in);
       mp = (MigratableProcess) is.readObject();
@@ -105,6 +106,7 @@ public class SlaveMessageHandler extends MessageHandler {
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
+    logger.info(mp.toString());
     thread = new Thread(mp);
     thread.setName(_context.getId()+" "+mp.toString());
     synchronized (_context.processes) {
