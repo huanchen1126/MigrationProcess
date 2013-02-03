@@ -39,7 +39,6 @@ public class HeartBeatSender implements Runnable {
           LinkedList<String> aliveProcessName = new LinkedList<String>();
           for (Thread thread : slaveManager.processes.keySet()) {
             if (!thread.isAlive()) {
-              slaveManager.console.printf("Process \"" + thread.getName() + "\" was terminated");
               toDelete.add(thread);
             } else {
               aliveProcessName.add(thread.getName());
