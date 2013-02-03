@@ -51,7 +51,9 @@ public class CopyFile implements MigratableProcess {
 
     if (writer != null)
       writer.close();
-    logger.info("DOING TO TERMINATE..................");
+    if (ProcessManager.DEBUG) {
+      logger.info("DOING TO TERMINATE..................");
+    }
     suspend = false;
   }
 

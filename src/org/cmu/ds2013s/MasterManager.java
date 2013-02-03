@@ -107,7 +107,9 @@ public class MasterManager implements ManagerContext, CompositeWorkItem {
       this._slaves.get(key).setTimeStamp(System.currentTimeMillis());
       this._slaves.get(key).setWorkload(wl);
     } else {
-      logger.info("No such slave " + key + " in Master now. Register it.");
+      if (ProcessManager.DEBUG) {
+        logger.info("No such slave " + key + " in Master now. Register it.");
+      }
 
       SlaveMeta newslave = new SlaveMeta(SlaveMeta.getIpFromMapKey(key),
               SlaveMeta.getPortFromMapKey(key), wl, System.currentTimeMillis());

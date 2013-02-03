@@ -30,15 +30,21 @@ public class SlaveMessageHandler extends MessageHandler {
     Command command = this.getCommand();
     switch (command.getType()) {
       case MIGRATE_SOURCE:
-        logger.info("Slave received command MIGRATE_SOURCE");
+        if (ProcessManager.DEBUG) {
+          logger.info("Slave received command MIGRATE_SOURCE");
+        }
         handleSource(command);
         break;
       case MIGRATE_SEND:
-        logger.info("Slave received command MIGRATE_SEND");
+        if (ProcessManager.DEBUG) {
+          logger.info("Slave received command MIGRATE_SEND");
+        }
         handleSend(command);
         break;
       case NEW_JOB:
-        logger.info("Slave received command NEW_JOB");
+        if (ProcessManager.DEBUG) {
+          logger.info("Slave received command NEW_JOB");
+        }
         handleNewJob(command);
         break;
       default:
@@ -81,7 +87,9 @@ public class SlaveMessageHandler extends MessageHandler {
       int jobid = Integer.parseInt(toMgr.getName().substring(0, toMgr.getName().indexOf(" ")));
       MigrateSendCommand toSend = new MigrateSendCommand(_context.get_hostname(),
               _context.get_port(), jobid, object);
-      System.out.println(Arrays.toString(toSend.toBytes()));
+      if (ProcessManager.DEBUG) {
+        System.out.println(Arrays.toString(toSend.toBytes()));
+      }
       try {
         CommunicationUtil.sendCommand(msc.getHost(), msc.getPort(), toSend.toBytes());
       } catch (ConnectException e) {
