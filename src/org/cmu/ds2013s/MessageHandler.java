@@ -9,6 +9,11 @@ import java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * This is the abstract handler class. It does some preliminary
+ * processes to the received message so as to extract some common
+ * information about this command. 
+ */
 public abstract class MessageHandler implements Runnable{
   
   private static final Log logger = LogFactory.getLog(MessageHandler.class);

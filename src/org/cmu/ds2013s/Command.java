@@ -5,6 +5,11 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+/**
+ * This class is the abstract base class for all types of Commands.
+ * 
+ * Also it provide a factory method to generate concrete Command objects
+ */
 public abstract class Command {
   /**
    * HEART_BEAT : heart beat command, slave -> master MIGRATE_SOURCE : inform a slave to be the
@@ -26,16 +31,22 @@ public abstract class Command {
     }
   };
 
+  // The field length of the number indicates the length of each message 
   public static int LENGTH_LEN = Integer.SIZE / Byte.SIZE;
 
+  // The field length of the command type
   public static int CMD_LEN = Integer.SIZE / Byte.SIZE;
 
+  // The field length of the IP address
   public static int IP_LEN = 32 / Byte.SIZE;
 
+  // The field length of the port number
   public static int PORT_LEN = Integer.SIZE / Byte.SIZE;
 
+  // The field length of the number carried in the message
   public static int NUM_LEN = Integer.SIZE / Byte.SIZE;
   
+  // The total length of header
   public static int HEADER_LEN = LENGTH_LEN + CMD_LEN + IP_LEN + PORT_LEN;
 
   private CommandType _type;
@@ -64,6 +75,17 @@ public abstract class Command {
 
   public abstract byte[] toBytes();
 
+  /**
+   * Factory method of generate concrete command objects according to message content.
+   * 
+   * @param content
+   *          the byte stream of the message
+   * @param rhost
+   *          the ip address of the node from which the message comes
+   * @param rport
+   *          the port number of the node from which the message comes
+   * @return a concrete command object; null if the message is invalid
+   */
   public static Command newInstance(byte[] content, String rhost, int rport) {
     Command result = null;
 
@@ -79,6 +101,7 @@ public abstract class Command {
     byte[] ipbin = null;
     int migNum = 0;
     int jobid = 0;
+    
     // 2. create command according to command type value
     try {
       switch (cmdtype) {

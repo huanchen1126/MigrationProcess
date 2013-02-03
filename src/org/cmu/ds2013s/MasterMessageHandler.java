@@ -5,10 +5,15 @@ import java.net.Socket;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * The handler is used for master node to make responds to incoming messages.
+ * Basically, in this system, the master node would only receive HEART_BEAT messages.
+ */
 public class MasterMessageHandler extends MessageHandler {
 
   private static final Log logger = LogFactory.getLog(MasterMessageHandler.class);
 
+  // the master manager reference to the master which use this handler 
   private MasterManager _context;
   
   public MasterMessageHandler(Socket s, ManagerContext context) {
@@ -34,7 +39,7 @@ public class MasterMessageHandler extends MessageHandler {
     }
   }
   
-  public void handleHeartBeat(Command cmd) {
+  private void handleHeartBeat(Command cmd) {
     HeartBeatCommand hbcmd = (HeartBeatCommand) cmd;
     String slavekey = SlaveMeta.getMapKey(hbcmd.getHost(), hbcmd.getPort());
     

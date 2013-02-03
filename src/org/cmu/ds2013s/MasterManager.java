@@ -14,22 +14,29 @@ import org.apache.commons.logging.LogFactory;
 public class MasterManager implements ManagerContext, CompositeWorkItem {
   private static final Log logger = LogFactory.getLog(MasterManager.class);
 
-  private Map<String, SlaveMeta> _slaves; // key is HOST:PORT
+  private Map<String, SlaveMeta> _slaves; // key is int "HOST:PORT" format
 
   public Console _console;
 
+  // the time period of doing load balance
   public static final int LOAD_BALANCE_CYCLE_SEC = 7;
 
+  // the time period of checking whether any node is dead
   public static final int ALIVE_CHECK_CYCLE_SEC = 2;
 
+  // the scheduler pool's size
   public static final int SCHEDULER_POOL_SIZE = 8;
 
+  // the port number on which this master runs
   private int _port;
 
+  // the ip address of the node on which this master runs
   private String _ip;
 
+  // the strategy to choose slaves to assign new tasks
   private SlaveChooserStrategy _scstrategy;
   
+  // the id for incoming task
   private AtomicInteger _nextid = new AtomicInteger(0);
 
   public MasterManager(int port) {
