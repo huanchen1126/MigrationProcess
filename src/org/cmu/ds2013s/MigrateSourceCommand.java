@@ -4,6 +4,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
+/**
+ * This command is sent from master to one slave, 
+ * informing this slave to suspend one process and send it to another slave.
+ * */
 public class MigrateSourceCommand extends Command {
 
   private int _migrateNum;

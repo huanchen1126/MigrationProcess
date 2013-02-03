@@ -1,9 +1,6 @@
 package org.cmu.ds2013s;
 
-import java.io.Console;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SlaveManager implements ManagerContext {
@@ -22,6 +19,7 @@ public class SlaveManager implements ManagerContext {
   /* port of master that this slave connect to */
   private int _masterPort;
   
+  /* current work load, for heart beat */
   private AtomicInteger currentLoad = new AtomicInteger(0);
 
   public SlaveManager(int port, String masterHostname, int masterPort) {
@@ -34,15 +32,16 @@ public class SlaveManager implements ManagerContext {
 
   @Override
   public void run() {
+    /* start heart beat sender */
     Thread heartBeatSender = new Thread(new HeartBeatSender(this));
     heartBeatSender.start();
+    /* start listener */
     Thread listener = new Thread(new NetworkListener(SlaveMessageHandler.class, _port, this));
     listener.start();
     try {
       heartBeatSender.join();
       listener.join();
     } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }

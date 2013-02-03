@@ -1,11 +1,6 @@
 package org.cmu.ds2013s;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.net.ConnectException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -14,13 +9,16 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cmu.ds2013s.Command.CommandType;
 
+/**
+ * The heart beat sender sends information of currently running information from slave to master periodically
+ * */
 public class HeartBeatSender implements Runnable {
   private static final Log logger = LogFactory.getLog(HeartBeatSender.class);
 
   SlaveManager slaveManager;
-
+  
+  /* period between heart beat in seconds */
   public final static int HEART_BEAT_PERIOD = 2;
 
   public HeartBeatSender(SlaveManager slaveManager) {
@@ -39,16 +37,18 @@ public class HeartBeatSender implements Runnable {
           LinkedList<String> aliveProcessName = new LinkedList<String>();
           for (Thread thread : slaveManager.processes.keySet()) {
             if (!thread.isAlive()) {
-              slaveManager.console.printf("Process \"" + thread.getName() + "\" was terminated");
               toDelete.add(thread);
             } else {
               aliveProcessName.add(thread.getName());
             }
           }
+          /* remove terminated processes */
           for (Thread thread : toDelete) {
             slaveManager.processes.remove(thread);
           }
+          /* update num of current running processes */
           slaveManager.setCurrentLoad(slaveManager.processes.size());
+          /* build the process list to send to master */
           processlist = new String[aliveProcessName.size()];
           aliveProcessName.toArray(processlist);
         }

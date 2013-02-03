@@ -7,7 +7,9 @@ import java.net.Socket;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+/**
+ * Network listener that listens the port and invokes a message handler for command
+ * */
 public class NetworkListener implements Runnable {
   private static final Log logger = LogFactory.getLog(NetworkListener.class);
 

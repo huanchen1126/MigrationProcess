@@ -13,8 +13,10 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cmu.ds2013s.Command.CommandType;
 
+/**
+ * handler of commands
+ */
 public class SlaveMessageHandler extends MessageHandler {
   private static final Log logger = LogFactory.getLog(SlaveMessageHandler.class);
 
@@ -51,7 +53,11 @@ public class SlaveMessageHandler extends MessageHandler {
         break;
     }
   }
-
+  /**
+   * handle Source command (from master): 
+   * select one process from currently running process list
+   * serialize the process and send the process to another slave indicated in the command
+   * */
   public void handleSource(Command command) {
     MigrateSourceCommand msc = (MigrateSourceCommand) command;
     Thread toMgr = null;
@@ -66,7 +72,9 @@ public class SlaveMessageHandler extends MessageHandler {
     }
     /* if got one alive process, migrate it */
     if (toMgr != null && toMgr.isAlive()) {
+      /* suspend the process */
       mp.suspend();
+      /* serialize the process */
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       ObjectOutput out = null;
       byte[] object = null;
@@ -90,6 +98,7 @@ public class SlaveMessageHandler extends MessageHandler {
       if (ProcessManager.DEBUG) {
         System.out.println(Arrays.toString(toSend.toBytes()));
       }
+      /* migrate the process to another slave */
       try {
         CommunicationUtil.sendCommand(msc.getHost(), msc.getPort(), toSend.toBytes());
       } catch (ConnectException e) {
@@ -97,7 +106,11 @@ public class SlaveMessageHandler extends MessageHandler {
       }
     }
   }
-
+  /**
+   * handle Send command (from another slave):
+   * this command consists of one process migrated from another slave
+   * deserialize the process object and restart it
+   * */
   public void handleSend(Command command) {
     MigrateSendCommand msc = (MigrateSendCommand) command;
     int jobid = msc.getJobId();
@@ -124,11 +137,15 @@ public class SlaveMessageHandler extends MessageHandler {
       thread.start();
     }
   }
-
+  /**
+   * handle NewJob command (from master):
+   * start a process of the class indicated in the command
+   * */
   public void handleNewJob(Command command) {
     NewJobCommand njc = (NewJobCommand) command;
     String cmd = njc.getInput();
     int jobid = njc.getJobId();
+    /* parse the class name and arguments */
     int spaceIndex = cmd.indexOf(' ');
     String className = "";
     String[] arguments = null;
@@ -141,6 +158,7 @@ public class SlaveMessageHandler extends MessageHandler {
     }
     Object[] objargs = { arguments };
     Class theClass = null;
+    /* start the process */
     try {
       logger.info("CLASSNAME: "+className);
       theClass = Class.forName(className);
