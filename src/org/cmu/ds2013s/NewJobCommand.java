@@ -7,15 +7,18 @@ import java.nio.ByteBuffer;
 public class NewJobCommand extends Command {
 
   private String _input;
+  
+  private int _jobid;
 
-  public NewJobCommand(String host, int port, String in) {
+  public NewJobCommand(String host, int port, int id, String in) {
     super(CommandType.NEW_JOB, host, port);
     this._input = in;
+    this._jobid = id;
   }
 
   @Override
   public byte[] toBytes() {
-    int totallen = Command.HEADER_LEN + this._input.length();
+    int totallen = Command.HEADER_LEN + NUM_LEN + this._input.length();
     byte[] result = new byte[totallen];
     int offset = 0;
 
@@ -36,7 +39,6 @@ public class NewJobCommand extends Command {
     try {
       ipbin = InetAddress.getByName(this.getHost()).getAddress();
     } catch (UnknownHostException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     System.arraycopy(ipbin, 0, result, offset, IP_LEN);
@@ -46,8 +48,13 @@ public class NewJobCommand extends Command {
     byte[] portbin = ByteBuffer.allocate(PORT_LEN).putInt(this.getPort()).array();
     System.arraycopy(portbin, 0, result, offset, PORT_LEN);
     offset += PORT_LEN;
+    
+    // 5. encode job id
+    byte[] jobidbin = ByteBuffer.allocate(NUM_LEN).putInt(this.getJobId()).array();
+    System.arraycopy(jobidbin, 0, result, offset, NUM_LEN);
+    offset += NUM_LEN;
 
-    // 5. encode cmdinput string
+    // 6. encode cmdinput string
     byte[] cmdstrbin = this._input.getBytes();
     System.arraycopy(cmdstrbin, 0, result, offset, cmdstrbin.length);
     offset += cmdstrbin.length;
@@ -55,11 +62,12 @@ public class NewJobCommand extends Command {
     return result;
   }
 
-  public String get_input() {
+  public String getInput() {
     return _input;
   }
-
-  public void set_input(String _input) {
-    this._input = _input;
+  
+  public int getJobId() {
+    return this._jobid;
   }
+  
 }

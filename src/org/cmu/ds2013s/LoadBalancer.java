@@ -18,7 +18,9 @@ public class LoadBalancer implements Runnable {
   }
 
   public void run() {
-    logger.info("LoadBalancer run.");
+    if (ProcessManager.DEBUG) {
+      logger.info("LoadBalancer run.");
+    }
 
     this.doLoadBalance();
   }
@@ -50,13 +52,17 @@ public class LoadBalancer implements Runnable {
 
     // nothing to do
     if (tasks == null || tasks.size() == 0) {
-      logger.info("LoadBalancer to do nothing.");
+      if (ProcessManager.DEBUG) {
+        logger.info("LoadBalancer to do nothing.");
+      }
       return;
     }
 
     for (MigrationTask task : tasks) {
-      System.out.println("migrate " + task.getNumber() + " tasks from " + task.getFrom().getPort()
-              + " to " + task.getTo().getPort());
+      if (ProcessManager.DEBUG) {
+        System.out.println("migrate " + task.getNumber() + " tasks from "
+                + task.getFrom().getPort() + " to " + task.getTo().getPort());
+      }
       
       Command migcmd = new MigrateSourceCommand(task);
       String host = task.getFrom().getIp();
@@ -65,7 +71,9 @@ public class LoadBalancer implements Runnable {
       try {
         CommunicationUtil.sendCommand(host, port, migcmd.toBytes());
       } catch (ConnectException e) {
-        System.out.println("Send migration request failed.");
+        if (ProcessManager.DEBUG) {
+          System.out.println("Send migration request failed.");
+        }
       }
     }
   }

@@ -78,6 +78,7 @@ public abstract class Command {
     int port = 0;
     byte[] ipbin = null;
     int migNum = 0;
+    int jobid = 0;
     // 2. create command according to command type value
     try {
       switch (cmdtype) {
@@ -120,12 +121,15 @@ public abstract class Command {
 
           port = ByteBuffer.wrap(content, offset, Command.PORT_LEN).getInt();
           offset += Command.PORT_LEN;
+          
+          jobid = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
+          offset += Command.NUM_LEN;
 
           byte[] cmdinputbin = new byte[content.length - offset];
           System.arraycopy(content, offset, cmdinputbin, 0, cmdinputbin.length);
           String cmdinput = new String(cmdinputbin);
 
-          result = new NewJobCommand(ipstr, port, cmdinput);
+          result = new NewJobCommand(ipstr, port,jobid, cmdinput);
           break;
         case MIGRATE_SEND:
           ipbin = new byte[Command.IP_LEN];
@@ -136,11 +140,14 @@ public abstract class Command {
 
           port = ByteBuffer.wrap(content, offset, Command.PORT_LEN).getInt();
           offset += Command.PORT_LEN;
+          
+          jobid = ByteBuffer.wrap(content, offset, Command.NUM_LEN).getInt();
+          offset += Command.NUM_LEN;
 
           byte[] object = new byte[content.length - offset];
           System.arraycopy(content, offset, object, 0, object.length);
 
-          result = new MigrateSendCommand(ipstr, port, object);
+          result = new MigrateSendCommand(ipstr, port, jobid, object);
       }
 
     } catch (UnknownHostException e) {

@@ -8,14 +8,17 @@ public class MigrateSendCommand extends Command {
 
   private byte[] _object;
   
-  public MigrateSendCommand(String host, int port, byte[] objectraw) {
+  private int _jobid;
+  
+  public MigrateSendCommand(String host, int port, int id, byte[] objectraw) {
     super(CommandType.MIGRATE_SEND, host, port);
     this._object = objectraw;
+    this._jobid = id;
   }
 
   @Override
   public byte[] toBytes() {
-    int totallen = Command.HEADER_LEN + this._object.length;
+    int totallen = Command.HEADER_LEN + Command.NUM_LEN + this._object.length;
     byte[] result = new byte[totallen];
     int offset = 0;
     
@@ -46,17 +49,22 @@ public class MigrateSendCommand extends Command {
     System.arraycopy(portbin, 0, result, offset, PORT_LEN);
     offset += PORT_LEN;
     
-    // 5. encode serialized object
+    // 5. encode job id
+    byte[] jobidbin = ByteBuffer.allocate(NUM_LEN).putInt(this.getJobId()).array();
+    System.arraycopy(jobidbin, 0, result, offset, NUM_LEN);
+    offset += NUM_LEN;
+    
+    // 6. encode serialized object
     System.arraycopy(this._object, 0, result, offset, this._object.length);
     
     return result;
   }
 
-  public byte[] get_object() {
+  public byte[] getObject() {
     return _object;
   }
-
-  public void set_object(byte[] _object) {
-    this._object = _object;
+  
+  public int getJobId() {
+    return this._jobid;
   }
 }

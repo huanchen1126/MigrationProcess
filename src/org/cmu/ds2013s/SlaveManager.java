@@ -86,5 +86,5 @@ public class SlaveManager implements ManagerContext {
   public void setCurrentLoad(int currentLoad) {
     this.currentLoad.set(currentLoad);
   }
-
+  
 }

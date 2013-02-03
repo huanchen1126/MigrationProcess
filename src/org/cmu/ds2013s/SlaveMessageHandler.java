@@ -30,15 +30,21 @@ public class SlaveMessageHandler extends MessageHandler {
     Command command = this.getCommand();
     switch (command.getType()) {
       case MIGRATE_SOURCE:
-        logger.info("Slave received command MIGRATE_SOURCE");
+        if (ProcessManager.DEBUG) {
+          logger.info("Slave received command MIGRATE_SOURCE");
+        }
         handleSource(command);
         break;
       case MIGRATE_SEND:
-        logger.info("Slave received command MIGRATE_SEND");
+        if (ProcessManager.DEBUG) {
+          logger.info("Slave received command MIGRATE_SEND");
+        }
         handleSend(command);
         break;
       case NEW_JOB:
-        logger.info("Slave received command NEW_JOB");
+        if (ProcessManager.DEBUG) {
+          logger.info("Slave received command NEW_JOB");
+        }
         handleNewJob(command);
         break;
       default:
@@ -78,9 +84,12 @@ public class SlaveMessageHandler extends MessageHandler {
           e.printStackTrace();
         }
       }
+      int jobid = Integer.parseInt(toMgr.getName().substring(0, toMgr.getName().indexOf(" ")));
       MigrateSendCommand toSend = new MigrateSendCommand(_context.get_hostname(),
-              _context.get_port(), object);
-      System.out.println(Arrays.toString(toSend.toBytes()));
+              _context.get_port(), jobid, object);
+      if (ProcessManager.DEBUG) {
+        System.out.println(Arrays.toString(toSend.toBytes()));
+      }
       try {
         CommunicationUtil.sendCommand(msc.getHost(), msc.getPort(), toSend.toBytes());
       } catch (ConnectException e) {
@@ -91,7 +100,8 @@ public class SlaveMessageHandler extends MessageHandler {
 
   public void handleSend(Command command) {
     MigrateSendCommand msc = (MigrateSendCommand) command;
-    byte[] object = msc.get_object();
+    int jobid = msc.getJobId();
+    byte[] object = msc.getObject();
     /* deserialize the object */
     ByteArrayInputStream in = new ByteArrayInputStream(object);
     MigratableProcess mp = null;
@@ -108,7 +118,7 @@ public class SlaveMessageHandler extends MessageHandler {
     }
     logger.info(mp.toString());
     thread = new Thread(mp);
-    thread.setName(_context.getId()+" "+mp.toString());
+    thread.setName(jobid+" "+mp.toString());
     synchronized (_context.processes) {
       _context.processes.put(thread, mp);
       thread.start();
@@ -117,7 +127,8 @@ public class SlaveMessageHandler extends MessageHandler {
 
   public void handleNewJob(Command command) {
     NewJobCommand njc = (NewJobCommand) command;
-    String cmd = njc.get_input();
+    String cmd = njc.getInput();
+    int jobid = njc.getJobId();
     int spaceIndex = cmd.indexOf(' ');
     String className = "";
     String[] arguments = null;
@@ -136,7 +147,7 @@ public class SlaveMessageHandler extends MessageHandler {
       MigratableProcess process = (MigratableProcess) theClass.getConstructor(String[].class)
               .newInstance(objargs);
       Thread thread = new Thread(process);
-      thread.setName(_context.getId()+" "+process.toString());
+      thread.setName(jobid+" "+process.toString());
       _context.processes.put(thread, process);
       thread.start();
       logger.info("JOB: "+cmd+" STARTED!");

@@ -18,7 +18,9 @@ public class SlaveAliveChecker implements Runnable {
   
   @Override
   public void run() {
-    logger.info("SlaveAliveChecker run.");
+    if (ProcessManager.DEBUG) {
+      logger.info("SlaveAliveChecker run.");
+    }
     
     this.doAliveChecking();
   }
@@ -41,7 +43,9 @@ public class SlaveAliveChecker implements Runnable {
     }
 
     for (SlaveMeta slave : tobedelete) {
-      logger.info("Slave " + slave.getIp() + ":" + slave.getPort() + " has been removed.");
+      if (ProcessManager.DEBUG) {
+        logger.info("Slave " + slave.getIp() + ":" + slave.getPort() + " has been removed.");
+      }
       this._manager.deleteSlaveMeta(SlaveMeta.getMapKey(slave));
     }
   }

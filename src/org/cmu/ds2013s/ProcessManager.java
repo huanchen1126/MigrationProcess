@@ -2,6 +2,8 @@ package org.cmu.ds2013s;
 
 public class ProcessManager {
   
+  public static boolean DEBUG = false;
+  
   private ProcessManager() {
     
   }
@@ -19,7 +21,9 @@ public class ProcessManager {
       try {
         main.join();
       } catch (InterruptedException e) {
-        System.err.println("Main procedure interupted unexpectedly.");
+        if (ProcessManager.DEBUG) {
+          System.err.println("Main procedure interupted unexpectedly.");
+        }
       }
     }
     

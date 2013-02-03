@@ -15,7 +15,9 @@ public class MasterMessageHandler extends MessageHandler {
     super(s);
     this._context = (MasterManager) context;
     
-    logger.info("Create a new Master Message Handler.");
+    if (ProcessManager.DEBUG) {
+      logger.info("Create a new Master Message Handler.");
+    }
   }
 
   @Override
@@ -36,7 +38,10 @@ public class MasterMessageHandler extends MessageHandler {
     HeartBeatCommand hbcmd = (HeartBeatCommand) cmd;
     String slavekey = SlaveMeta.getMapKey(hbcmd.getHost(), hbcmd.getPort());
     
-    logger.info("Received a HEARTBEAT from " + slavekey + ". Load is " + hbcmd.get_processList().length);
+    if (ProcessManager.DEBUG) {
+      logger.info("Received a HEARTBEAT from " + slavekey + ". Load is "
+              + hbcmd.get_processList().length);
+    }
     
     this._context.updateSlaveMeta(slavekey, hbcmd.get_processList().length, hbcmd.get_processList());    
   }

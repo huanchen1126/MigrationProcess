@@ -19,7 +19,9 @@ public class NetworkListener implements Runnable {
 
   public NetworkListener(Class c, int port, ManagerContext context) {
     try {
-      logger.info("Received a command from master");
+      if (ProcessManager.DEBUG) {
+        logger.info("Received a command from master");
+      }
       _class = c;
       _port = port;
       if (!MessageHandler.class.isAssignableFrom(_class)) {
@@ -40,13 +42,17 @@ public class NetworkListener implements Runnable {
     try {
       serverSocket = new ServerSocket(this._port);
       while (listening) {
-        logger.info("Listening");
+        if (ProcessManager.DEBUG) {
+          logger.info("Listening");
+        }
         Socket socket = serverSocket.accept();
         Object[] objargs = {socket,_context};
         Thread thread = new Thread((Runnable) _class.getConstructor(Socket.class,
                 ManagerContext.class).newInstance(objargs));
         thread.start();
-        logger.info("Accepted");
+        if (ProcessManager.DEBUG) {
+          logger.info("Accepted");
+        }
       }
     } catch (IOException e) {
       e.printStackTrace();
