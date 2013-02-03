@@ -5,6 +5,19 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * This class is the default load balance strategy for the master node.
+ * 
+ * When doing load balance, this strategy first sort all slaves in terms
+ * of their workload. Then find many slave pairs. In each node pair, one
+ * node's workload is more than the average workload, while the other
+ * one's workload is less than the average workload. For each migration
+ * pair, just migrate 1 task each time.
+ * 
+ * In this way, the load balance procedure is gradual and smoothly, rather
+ * than leveling all slaves' workloads into average immediately.
+ */
+
 public class DefaultLoadBalancerStrategy implements LoadBalancerStrategy {
   private static final Log logger = LogFactory.getLog(DefaultLoadBalancerStrategy.class);
 

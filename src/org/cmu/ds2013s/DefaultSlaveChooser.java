@@ -2,6 +2,11 @@ package org.cmu.ds2013s;
 
 import java.util.List;
 
+/**
+ * The class is the default to choose a slave node to assign the new
+ * coming task. In this class, it just choose the slave with the lightest
+ * workload.
+ */
 public class DefaultSlaveChooser implements SlaveChooserStrategy {
 
   @Override
