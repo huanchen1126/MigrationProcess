@@ -1,11 +1,16 @@
 package org.cmu.ds2013s;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,21 +19,48 @@ public class WebpageCrawler implements MigratableProcess {
   private static final Log logger = LogFactory.getLog(TestMigrateProcess.class);
 
   volatile boolean suspend = false;
+  /* queue for urls */
+  private Queue<String> queue;
+  
+  /* regex to extract ref links */
+  private static String _PatternStr = "(?mis)href=\"(.*?)\"";
+  private Pattern _Pattern;
+  
+  /* root of target website */
+  private String root;
 
-  String[] args = null;
+  /* args, stored for toString() */
+  private String[] args = null;
 
-  TransactionFileInputStream inputStream = null;
-
+  /* output */
   TransactionFileOutputStream outputStream = null;
 
+  /* two arguments, first one is the url, second one is the output file */
   public WebpageCrawler(String[] args) {
     if (args.length != 2)
       return;
-    this.args = args;
-    String input = args[0];
+    queue = new LinkedList<String>();
+    this._Pattern = Pattern.compile(_PatternStr);
+    String url = args[0];
+    
+    /** get root of the url, 
+     * e.g the root for www.cmu.edu is cmu.edu, 
+     * the root for cmu.edu/global is cmu.edu/global*/
+    root = url.substring(url.indexOf('.')+1);
+    if(root.indexOf('.')==-1)
+      root = url;
+    
+    root = root.replace("http://", "");
+    root = root.replace("https://", "");
+    /* End get root */
+    
+    if(url.indexOf("http")==-1)
+      url = "http://" + url;
+    queue.add(url);
+    
+    this.args = args;   
+    
     String output = args[1];
-
-    this.inputStream = new TransactionFileInputStream(input);
     this.outputStream = new TransactionFileOutputStream(output);
   }
 
@@ -36,21 +68,21 @@ public class WebpageCrawler implements MigratableProcess {
   public void run() {
     PrintWriter writer = new PrintWriter(this.outputStream);
     while (!suspend) {
-      try {
-        String s = this.inputStream.readLine();
-        if (s == null)
-          break;
-        
-        writer.println(getHTML(s));
-        writer.flush();
-        Thread.sleep(500);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
+      String url = queue.poll();
+      if (url == null)
+        break;
+      String html = getHTML(url);
+      writer.println(html);
+      writer.flush();
+      Matcher patternM = _Pattern.matcher(html);
+      while (patternM.find()) {
+        String newUrl = patternM.group(1);
+        /* if this new url belongs to root, add it to queue */
+        if(newUrl.indexOf(root)!=-1 && newUrl.indexOf("http")!=-1){
+          queue.add(newUrl);
+        }        
       }
     }
-
     if (writer != null)
       writer.close();
     suspend = false;
@@ -79,19 +111,21 @@ public class WebpageCrawler implements MigratableProcess {
     HttpURLConnection conn;
     BufferedReader rd;
     String line;
-    String result = "";
+    StringBuilder result = new StringBuilder();
     try {
       url = new URL(targetURL);
       conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("GET");
       rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
       while ((line = rd.readLine()) != null) {
-        result += line;
+        result.append(line);
       }
       rd.close();
-    } catch (Exception e) {
+    }catch(FileNotFoundException e){
+      return "";
+    }catch (Exception e) {
       e.printStackTrace();
-    }
-    return result;
+    }  
+    return result.toString();
   }
 }
