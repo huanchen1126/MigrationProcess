@@ -16,7 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class WebpageCrawler implements MigratableProcess {
-  private static final Log logger = LogFactory.getLog(TestMigrateProcess.class);
+  private static final Log logger = LogFactory.getLog(WebpageCrawler.class);
 
   volatile boolean suspend = false;
   /* queue for urls */
