@@ -1,12 +1,9 @@
 package org.cmu.ds2013s;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -20,6 +17,9 @@ import org.apache.commons.logging.LogFactory;
 public class WebpageCrawler implements MigratableProcess {
   private static final Log logger = LogFactory.getLog(WebpageCrawler.class);
 
+  /* only crawl NUM_PAGE pages */
+  private static final int NUM_PAGE = 1000;
+  private int count = 0;
   volatile boolean suspend = false;
   /* queue for urls */
   private Queue<String> queue;
@@ -80,6 +80,11 @@ public class WebpageCrawler implements MigratableProcess {
       String html = getHTML(url);
       writer.println(html);
       writer.flush();
+      
+      /* if exceeds num of pages needed, stop */
+      if(count++>this.NUM_PAGE)
+        break;
+      
       Matcher patternM = _Pattern.matcher(html);
       while (patternM.find()) {
         String newUrl = patternM.group(1);
