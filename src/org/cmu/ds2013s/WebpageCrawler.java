@@ -101,7 +101,6 @@ public class WebpageCrawler implements MigratableProcess {
 
   @Override
   public void suspend() {
-    // TODO Auto-generated method stub
     suspend = true;
     while (suspend)
       ;
