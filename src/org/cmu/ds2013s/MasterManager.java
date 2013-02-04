@@ -68,9 +68,11 @@ public class MasterManager implements ManagerContext, CompositeWorkItem {
     serviceSche.scheduleAtFixedRate(aliveChecker, ALIVE_CHECK_CYCLE_SEC, ALIVE_CHECK_CYCLE_SEC,
             TimeUnit.SECONDS);
 
+    Scanner scanner = new Scanner(System.in);
     // start the console
     while (true) {
-      String command = this._console.readLine("==> ").trim();
+      System.out.print("==> ");
+      String command = scanner.nextLine().trim();
       if (command.equals("")) {
         continue;
       } else if (command.equals("ps")) {
@@ -88,7 +90,6 @@ public class MasterManager implements ManagerContext, CompositeWorkItem {
           try {
             CommunicationUtil.sendCommand(slave.getIp(), slave.getPort(), njcmd.toBytes());
           } catch (ConnectException e) {
-            // TODO : handle send failure.
             System.err.println("Opps, my fault.");
           }
         } else { // no slave exist
