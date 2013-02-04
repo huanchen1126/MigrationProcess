@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -21,6 +22,8 @@ public class WebpageCrawler implements MigratableProcess {
   volatile boolean suspend = false;
   /* queue for urls */
   private Queue<String> queue;
+  /* for removing duplicates */
+  private HashSet<String> hs;
   
   /* regex to extract ref links */
   private static String _PatternStr = "(?mis)href=\"(.*?)\"";
@@ -40,6 +43,7 @@ public class WebpageCrawler implements MigratableProcess {
     if (args.length != 2)
       return;
     queue = new LinkedList<String>();
+    hs = new HashSet<String>();
     this._Pattern = Pattern.compile(_PatternStr);
     String url = args[0];
     
@@ -57,6 +61,7 @@ public class WebpageCrawler implements MigratableProcess {
     if(url.indexOf("http")==-1)
       url = "http://" + url;
     queue.add(url);
+    hs.add(url);
     
     this.args = args;   
     
@@ -77,8 +82,8 @@ public class WebpageCrawler implements MigratableProcess {
       Matcher patternM = _Pattern.matcher(html);
       while (patternM.find()) {
         String newUrl = patternM.group(1);
-        /* if this new url belongs to root, add it to queue */
-        if(newUrl.indexOf(root)!=-1 && newUrl.indexOf("http")!=-1){
+        /* if this new url belongs to root, start with "http", and have not downloaded yet, add it to queue */
+        if(newUrl.indexOf(root)!=-1 && newUrl.startsWith("http") && !hs.contains(newUrl)){
           queue.add(newUrl);
         }        
       }
@@ -123,9 +128,16 @@ public class WebpageCrawler implements MigratableProcess {
       rd.close();
     }catch(FileNotFoundException e){
       return "";
+    }catch(IOException e){
+      return "";
     }catch (Exception e) {
       e.printStackTrace();
     }  
     return result.toString();
+  }
+  public static void main(String[] args){
+    String[] arg ={"cmu.edu","/Users/huanchen/Documents/workspace/output.txt"};
+    WebpageCrawler wc = new WebpageCrawler(arg);
+    new Thread(wc).start();
   }
 }
