@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -126,12 +127,8 @@ public class WebpageCrawler implements MigratableProcess {
         result.append(line);
       }
       rd.close();
-    }catch(FileNotFoundException e){
-      return "";
-    }catch(IOException e){
-      return "";
     }catch (Exception e) {
-      e.printStackTrace();
+      return "";
     }  
     return result.toString();
   }
