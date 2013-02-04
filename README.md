@@ -2,7 +2,8 @@
 	by Mengwei Ding (mengweid), Huanchen Zhang (huanchez)
 	=====================================================
 
-This system distributes jobs to slaves and does load balance when necessary.
+System description
+This system distributes jobs to slaves and does load balance when necessary. The user submit one job to master through master command line, and master distributes the job to the slave with lightest work load. The slaves send heart beat to master periodically with the list of current running processes on the slave. When there is an unbalance work load between slaves, the master will send a migrate message to heavy loaded slaves, asking them to suspend one process and migrate the process to another slave. When the other slave receives the suspended process, it will restart it from the point the process was suspended.
 
 Two MigratableProcesses are implemented for testing.
 1) Grep
