@@ -2,6 +2,8 @@ package org.cmu.ds2013s;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Grep implements MigratableProcess {
 
@@ -16,6 +18,8 @@ public class Grep implements MigratableProcess {
   private String[] args;
   
   private String regex;
+  
+  private Pattern linePattern;
 
   public Grep(String[] args) {
     this.args = args;
@@ -29,6 +33,7 @@ public class Grep implements MigratableProcess {
     String infile = args[1];
     String outfile = args[2];
 
+    this.linePattern = Pattern.compile(this.regex);
     this.inputStream = new TransactionFileInputStream(infile);
     this.outputStream = new TransactionFileOutputStream(outfile);
   }
@@ -36,7 +41,7 @@ public class Grep implements MigratableProcess {
   @Override
   public void run() {
     PrintWriter writer = new PrintWriter(this.outputStream);
-    
+    Matcher pm = null;
     try {
       while (!suspend) {
         String line;
@@ -46,7 +51,13 @@ public class Grep implements MigratableProcess {
         if (line == null)
           break;
         
-        if (line.matches(this.regex)) {
+        if (pm == null) {
+          pm = this.linePattern.matcher(line);
+        }else{
+          pm.reset(line);
+        }
+        
+        if (pm.find()) {
           writer.write(this.lineNumber + ":\t" + line);
           writer.flush();
           Thread.sleep(100);
