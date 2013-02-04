@@ -135,9 +135,4 @@ public class WebpageCrawler implements MigratableProcess {
     }  
     return result.toString();
   }
-  public static void main(String[] args){
-    String[] arg ={"cmu.edu","/Users/huanchen/Documents/workspace/output.txt"};
-    WebpageCrawler wc = new WebpageCrawler(arg);
-    new Thread(wc).start();
-  }
 }
