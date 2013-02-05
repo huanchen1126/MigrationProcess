@@ -21,7 +21,7 @@ was suspended.
 Two MigratableProcesses are implemented for testing.
 
 1) Grep
-This class implements a similar function as unix command 'grep'. If one line 
+This class implements a similar function as unix command 'grep'. If one lin 
 of the input file contains the regex pattern, it will be written to output file.
 
 This class takes three arguments: regex pattern, input file path, output file path.
@@ -68,5 +68,5 @@ To submit a WebpageCrawler job, use can type in following command in master comm
 	"org.cmu.ds2013s.WebpageCrawler $url $outputfile".
 
 To test the load balancing function, user can start one master, one slave, submit several jobs, 
-then start some more slaves. User can type in 'ps' command in master command line, tosee the 
+then start some more slaves. User can type in 'ps' command in master command line, to see the 
 balance of jobs between slaves.
